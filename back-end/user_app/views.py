@@ -5,7 +5,8 @@ from rest_framework.status import \
 HTTP_200_OK,\
 HTTP_201_CREATED,\
 HTTP_204_NO_CONTENT,\
-HTTP_400_BAD_REQUEST
+HTTP_400_BAD_REQUEST,\
+HTTP_401_UNAUTHORIZED
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
@@ -13,6 +14,9 @@ from django.contrib.auth import login, logout, authenticate
 from .models import App_User
 from .serializers import App_UserSerializer
 from collection_app.models import Collection
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 # inherit from this to verify use is logged in before attempting to do anything
@@ -40,6 +44,7 @@ class Register_New_User(APIView):
         except Exception as e:
             return Response({'error':str(e)})
         
+@method_decorator(csrf_exempt, name='dispatch')
 class Register_Super(APIView):
     def post(self, request):
         data = request.data.copy()
@@ -118,9 +123,6 @@ class UserInfo(LoggedInView):
         return Response(serialized_user.errors, status=HTTP_400_BAD_REQUEST)
 
 
-
-
-    
 class LogOut(LoggedInView):
     def post(self, request):
         request.user.auth_token.delete()
@@ -129,3 +131,29 @@ class LogOut(LoggedInView):
             "You have been successfully logged out",
             status=HTTP_204_NO_CONTENT
         )
+
+class UserDeleteView(LoggedInView):
+    def post(self, request, user_id):
+        
+        user = get_object_or_404(App_User, id=user_id)
+
+        if request.user.is_superuser:
+        
+            try:
+                collection = getattr(user, 'collection', None)
+                if collection:
+                    for group in collection.set_group.all():
+                        group.single_set.all().delete()
+
+                    collection.set_group.all().delete()
+
+                    collection.delete()
+
+                user.delete()
+
+                return Response('User was successfully deleted',status=HTTP_200_OK)
+
+            except Exception as e:
+                return Response({'error': str(e)}, status=500)
+        else:
+            return Response('Insufficient permission to delete user', status=HTTP_401_UNAUTHORIZED)
