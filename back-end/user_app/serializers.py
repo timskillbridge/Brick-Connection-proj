@@ -23,6 +23,7 @@ class Manage_UserSerializer(ModelSerializer):
         fields = [
             'id',
             'username',
-            'email'
+            'email',
+            'is_superuser'
         ]
         read_only_fields = ['id']
