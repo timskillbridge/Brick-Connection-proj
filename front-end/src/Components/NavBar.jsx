@@ -33,9 +33,9 @@ const navigate = useNavigate()
             <li>
             <Link to={'/LoginPage/'}>Login</Link>
             </li>}
-            {/* <li>
+            <li>
             <Link to={'/RegisterPage/'}>Register</Link>
-            </li> */}
+            </li>
 
         </ul>
     </div>
