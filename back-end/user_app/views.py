@@ -12,7 +12,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import login, logout, authenticate
 from .models import App_User
-from .serializers import App_UserSerializer
+from .serializers import App_UserSerializer, Manage_UserSerializer
 from collection_app.models import Collection
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -157,3 +157,15 @@ class UserDeleteView(LoggedInView):
                 return Response({'error': str(e)}, status=500)
         else:
             return Response('Insufficient permission to delete user', status=HTTP_401_UNAUTHORIZED)
+
+class All_Users(LoggedInView):
+    def get(self, request):
+        if not request.user.is_superuser:
+            return Response('You have insufficient access to this feature',status=HTTP_401_UNAUTHORIZED)
+        user_list = App_User.objects.all()
+        serialized_users = Manage_UserSerializer(user_list, many=True)
+        return Response({
+            'user': serialized_users.data
+        },
+        status=HTTP_200_OK
+        )

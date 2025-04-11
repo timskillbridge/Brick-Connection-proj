@@ -16,3 +16,13 @@ class App_UserSerializer(ModelSerializer):
 
         ]
         read_only_fields = ['id']
+
+class Manage_UserSerializer(ModelSerializer):
+    class Meta:
+        model = App_User
+        fields = [
+            'id',
+            'username',
+            'email'
+        ]
+        read_only_fields = ['id']
