@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { Outlet, useOutletContext } from 'react-router-dom'
 import NavBar from './Components/NavBar'
-import { back_end_api } from './utilities';
+import { api } from './utilities';
 
 export function App() {
   const [user, setUser] = useState(null);

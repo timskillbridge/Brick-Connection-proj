@@ -1,25 +1,22 @@
 import axios from 'axios'
-import { alignPropType } from 'react-bootstrap/esm/types';
 
-export const back_end_api = axios.create({
-    baseURL : 'http://127.0.0.1:8000/api/v1/'
-})
+export const api = axios.create({
+    baseURL: "http://127.0.0.1:8000/api/v1/",
+  });
 
-export const userRegistration = async(email,password) => {
-    let response = await back_end_api.post('user/register/',
-        {
-            email:email,
-            password:password
-        }
-    );
-    if (response.status ==200) {
-        let { username, token } = response.data;
-        alert(JSON.stringify(response.data, null, 2))
-        localStorage.setItem('token',token);
-        back_end_api.defaults.headers.common['Authorization'] = `token ${token}`
-            return username;
+
+  export const userRegistration = async (email, password) => {
+    let response = await api.post("user/register/", {
+      email: email,
+      password: password,
+    });
+    if (response.status === 201) {
+      let { user, token } = response.data;
+      // Store the token securely (e.g., in localStorage or HttpOnly cookies)
+      localStorage.setItem("token", token);
+      api.defaults.headers.common["Authorization"] = `Token ${token}`;
+      return user;
     }
-    alert(response.data)
-    return null
-}
-
+    alert(response.data);
+    return null;
+  };
