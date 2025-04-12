@@ -82,13 +82,13 @@ class Log_In(APIView):
             login(request, user)
             return Response(
                 {
-                    'logged in user': user.username,
-                    'token used': user_token.key
+                    'user': user.username,
+                    'token': user_token.key
                 },
                 status = HTTP_200_OK
             )
         print('USER NOT FOUND FOR SOME REASON')
-        Response('No user matching the provided credentials', HTTP_400_BAD_REQUEST)
+        return Response('No user matching the provided credentials', HTTP_400_BAD_REQUEST)
 
 class UserInfo(LoggedInView):
     def get(self, request):

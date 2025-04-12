@@ -1,31 +1,37 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { Outlet, useOutletContext } from 'react-router-dom'
+import { Navigate, Outlet, useLoaderData, useNavigate } from 'react-router-dom'
 import NavBar from './Components/NavBar'
 import { api } from './utilities';
 
 export function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(useLoaderData());
+  const [currentError, setCurrentError] = useState('')
+  const {navigate} = useNavigate()
 
-  const test_connection = async () => {
-    let response = await back_end_api.get('test');
-    console.log(response.data);
-  };
-
+  
   useEffect(() => {
-    test_connection();
-
-  },[]);
-
-  useEffect(() => {
+    if (user) {
     console.log(user);
+    }
   }, [user]);
+
+  useEffect(() => {
+    let nullUserUrl = ['user/login/', '/register/']
+    let isAllowed = nullUserUrl.includes(location.pathname);
+    if (user && isAllowed) {
+      Navigate('/');
+    } else if (!user && isAllowed) {
+      Navigate('/');
+    }
+    },[location.pathname]);
+  
 
   return (
     <>
     
-    <NavBar />
-    <Outlet context={{user, setUser}}/>
+    <NavBar user = {user} setUser={setUser}/>
+    <Outlet context={{user, setUser, currentError, setCurrentError, navigate}} />
     </>
   )
 

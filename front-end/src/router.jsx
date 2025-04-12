@@ -8,12 +8,14 @@ import MyPage from './Pages/MyPage';
 import RegisterPage from './Pages/RegisterPage';
 import ErrorPage from './Pages/ErrorPage';
 import NotFoundPage from './Pages/NotFoundPage';
+import { confirmUser } from './utilities';
 
 
 const router = createBrowserRouter([
     {
         path:'/',
         element: <App />,
+        loader: confirmUser,
         children: [
 
             {

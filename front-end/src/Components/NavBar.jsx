@@ -1,44 +1,64 @@
 import React from 'react'
 import { useState, useEffect } from "react";
 import {Link, useNavigate} from 'react-router-dom'
+import { userLogout } from "../utilities";
+import { Nav, Button} from 'react-bootstrap';
 
 
-
-const NavBar = () => {
-const [loggedIn, setLoggedIn] = useState(false)
+const NavBar = ({user, setUser}) => {
 const navigate = useNavigate()
 
+const handleLogout = async() => {
+  const worked = await userLogout();
+  if (worked) {
+    navigate('/')
+    setUser(null)
+  }
+}
+const handleLogin = () => {
+  navigate('/LoginPage/')
+}
+
   return (
-    <div id='NavBar'>
+   
+      <>
+       <div id='NavBar'>
             <ul style={{listStyleType: 'none', display:'flex', justifyContent:'space-around'}}>
             <li>
-            <Link to={'/'}>Home Page</Link>
+            <Nav.Link as={Link} to='/'>Home</Nav.Link>
             </li>
             <li>
-            <Link to={'/AboutPage/'}>About Page</Link>
+            <Nav.Link as={Link} to='/AboutPage/'>About</Nav.Link>
             </li>
             <li>
-            <Link to={'/FindSetPage'}>Find a Set</Link>
+            <Nav.Link as={Link} to='/FindSetPage/'>Find a Set</Nav.Link>
             </li>
-            
             
             {
-            loggedIn?
+            user?
             <>
             <li>
-            <Link to={'/MyPage/'}>My Page</Link>
+            <Nav.Link as={Link} to='/MyPage/'>My Page</Nav.Link>
             </li>
+            <Button
+            variant="outline-danger"
+            onClick={handleLogout}>
+            Log Out
+            </Button>
             </>
             :
-            <li>
-            <Link to={'/LoginPage/'}>Login</Link>
-            </li>}
-            <li>
-            <Link to={'/RegisterPage/'}>Register</Link>
-            </li>
-
+            <>
+            <Button
+            variant="primary"
+            onClick = {handleLogin}>
+            Log In
+            </Button>
+            </>
+            }
+            
         </ul>
     </div>
+    </>
   )
 }
 export default NavBar
