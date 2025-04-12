@@ -3,12 +3,12 @@ import {useState} from 'react';
 import { Form, Button } from 'react-bootstrap'
 import { Container, Row, Col, Tab, Tabs, FloatingLabel } from 'react-bootstrap';
 import { useOutletContext, useNavigate } from 'react-router-dom'
-import { userLogin } from '../utilities'
+import { userLogin, confirmUser } from '../utilities'
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const {user, setUser, currentError, setCurrentError} = useOutletContext();
+  const {user, setUser, currentError, setCurrentError, spr, setSpr} = useOutletContext();
 const navigate = useNavigate()
 
   useEffect(() => {
@@ -30,9 +30,12 @@ const navigate = useNavigate()
             onSubmit={async (e) => {
               e.preventDefault();
               const log = await userLogin(username, password, setCurrentError);
-              if (log.response == 200) {
+              if (log?.response == 200 ) {
                 setUser(log.user)
+                setSpr(log.is_super);
+                console.log(log.user)
                 navigate('/MyPage/');
+
               }
               }
             }

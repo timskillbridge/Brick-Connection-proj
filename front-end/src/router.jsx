@@ -8,6 +8,7 @@ import MyPage from './Pages/MyPage';
 import RegisterPage from './Pages/RegisterPage';
 import ErrorPage from './Pages/ErrorPage';
 import NotFoundPage from './Pages/NotFoundPage';
+import ManageUserPage from './Pages/ManageUserPage'
 import { confirmUser } from './utilities';
 
 
@@ -39,8 +40,8 @@ const router = createBrowserRouter([
                 element: <MyPage />
             },
             {
-                path: '/RegisterPage',
-                element: <RegisterPage />
+                path: '/ManageUSerPage',
+                element: <ManageUserPage />
             },
             {
                 path: "*",

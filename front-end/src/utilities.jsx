@@ -33,11 +33,15 @@ export const api = axios.create({
 
 
         let {user, token} = response.data
+        let is_super = false
+        if (response.data['is_super']) { is_super = true}
         localStorage.setItem('token', token);
         api.defaults.headers.common["Authorization"] = `token ${token}`;
         console.log(`Logged in ${user} ${response.status}`, token)
-        return {"user":user,
-              "response":response.status
+        console.log('Full response data:', response.data);
+        return {"user":username,
+              "response":response.status,
+              'is_super':is_super
         };
 
   } catch (error) {
@@ -70,8 +74,14 @@ export const api = axios.create({
       api.defaults.headers.common['Authorization'] = `token ${token}`
       let response = await api.get('user/')
       if (response.status == 200) {
-        console.log(`response: ${response.status}, user verified`)
-        return true;
+        const {username} = response.data
+        let is_super = false
+        if(response.data['site administrator']) {is_super = true}
+
+        console.log(`user ${username} | ${response.status} | user verified | super: ${is_super}`)
+        return {'username':username,
+          'is_super':is_super
+        }
       }
     }
     return false;

@@ -5,9 +5,10 @@ import NavBar from './Components/NavBar'
 import { api } from './utilities';
 
 export function App() {
-  const [user, setUser] = useState(useLoaderData());
-  const [currentError, setCurrentError] = useState('')
-  const {navigate} = useNavigate()
+  const [user, setUser] = useState(useLoaderData()['username']);
+  const [spr, setSpr] = useState(useLoaderData()['is_super']);
+  const [currentError, setCurrentError] = useState('');
+
 
   
   useEffect(() => {
@@ -17,12 +18,12 @@ export function App() {
   }, [user]);
 
   useEffect(() => {
-    let nullUserUrl = ['user/login/', '/register/']
+    let nullUserUrl = ['user/login/']
     let isAllowed = nullUserUrl.includes(location.pathname);
     if (user && isAllowed) {
-      Navigate('/');
+      navigate('/');
     } else if (!user && isAllowed) {
-      Navigate('/');
+      navigate('/');
     }
     },[location.pathname]);
   
@@ -30,8 +31,8 @@ export function App() {
   return (
     <>
     
-    <NavBar user = {user} setUser={setUser}/>
-    <Outlet context={{user, setUser, currentError, setCurrentError, navigate}} />
+    <NavBar user = {user} setUser={setUser} spr = {spr} setSpr = {setSpr}/>
+    <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr}} />
     </>
   )
 

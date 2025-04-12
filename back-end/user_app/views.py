@@ -83,7 +83,8 @@ class Log_In(APIView):
             return Response(
                 {
                     'user': user.username,
-                    'token': user_token.key
+                    'token': user_token.key,
+                    'is_super': user.is_superuser
                 },
                 status = HTTP_200_OK
             )
@@ -96,7 +97,7 @@ class UserInfo(LoggedInView):
             'username': request.user.username,
             'email' : request.user.email,
             'first name': request.user.first_name,
-    'last name': request.user.last_name if request.user.last_name != "" else 'None Provided',
+            'last name': request.user.last_name if request.user.last_name != "" else 'None Provided',
             **({'site administrator':request.user.is_superuser}
                if request.user.is_superuser
                else {'is_active':request.user.is_active})
