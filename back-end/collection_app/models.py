@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core import validators as v
 from user_app.models import App_User
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+import os
 # Create your models here.
 
 class Collection(models.Model):
@@ -26,6 +29,21 @@ class Single_Set(models.Model):
     set_img_url = models.CharField(max_length=255, null = True, blank = True)
     custom = models.BooleanField(default=False)
     set_group = models.ForeignKey(Set_Group, on_delete=models.CASCADE, related_name='single_set', blank=True, null=True)
+    image = models.ImageField(upload_to='user/custom_sets', null =True, blank=True)
 
 
 
+@receiver(pre_save, sender=Single_Set)
+def delete_old_set_image(sender, instance, **kwargs):
+    if not instance.pk:
+        return  # new user, nothing to delete
+
+    try:
+        old_image = Single_Set.objects.get(pk=instance.pk).image
+    except Single_Set.DoesNotExist:
+        return
+
+    new_image = instance.image
+    if old_image and old_image != new_image:
+        if os.path.isfile(old_image.path):
+            os.remove(old_image.path)

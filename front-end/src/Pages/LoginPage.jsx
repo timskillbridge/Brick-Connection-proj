@@ -3,7 +3,7 @@ import {useState} from 'react';
 import { Form, Button } from 'react-bootstrap'
 import { Container, Row, Col, Tab, Tabs, FloatingLabel } from 'react-bootstrap';
 import { useOutletContext, useNavigate } from 'react-router-dom'
-import { userLogin, confirmUser } from '../utilities'
+import { userLogin, confirmUser, userRegistration } from '../utilities'
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -51,13 +51,41 @@ const navigate = useNavigate()
             type='submit'>
               Log me in!
             </Button>
-            {currentError}
+            <p style={{color: 'red'}}>{currentError}</p>
           </Form>
         </Tab>
 
         <Tab eventKey="register" title="Register">
-          {/* You can build the registration form here */}
-          <p>Registration form goes here</p>
+          
+        <Form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const log = await userRegistration(username, password, setCurrentError);
+              if (log?.response == 200 ) {
+                setUser(log.user)
+                setSpr(log.is_super);
+                console.log(log.user)
+                navigate('/MyPage/');
+
+              }
+              }
+            }
+          >
+            <FloatingLabel controlId="floatingRegistrationInput" label="Username" className="mb-3">
+              <Form.Control type="username" placeholder="name@example.com" onChange={(e) => setUsername(e.target.value)}/>
+            </FloatingLabel>
+            <FloatingLabel controlId="floatingRegistrationPassword" label="Password">
+              <Form.Control type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
+            </FloatingLabel>
+            <Button
+            variant='secondary'
+            type='submit'>
+              Register me!
+            </Button>
+            <p style={{color: 'red'}}>{currentError}</p>
+
+          </Form>
+
         </Tab>
       </Tabs>
     </Col>

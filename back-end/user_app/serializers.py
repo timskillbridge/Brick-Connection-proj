@@ -13,6 +13,7 @@ class App_UserSerializer(ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'image'
 
         ]
         read_only_fields = ['id']
@@ -24,6 +25,7 @@ class Manage_UserSerializer(ModelSerializer):
             'id',
             'username',
             'email',
-            'is_superuser'
+            'is_superuser',
+            'image'
         ]
         read_only_fields = ['id']

@@ -7,30 +7,41 @@ export const api = axios.create({
   });
 
 
-  export const userRegistration = async (email, password) => {
+  export const userRegistration = async (username, password, setCurrentError) => {
+    const regex = new RegExp("[a-zA-Z].+@[a-zA-Z].+\.[a-zA-Z].+");
+    if(!regex.test(username)) {
+      setCurrentError('Invalid email address')
+      return
+    }
+    try {
     let response = await api.post("user/register/", {
-      email: email,
+      email: username,
       password: password,
     });
-    if (response.status === 201) {
-      let { user, token } = response.data;
-      // Store the token securely (e.g., in localStorage or HttpOnly cookies)
-      localStorage.setItem("token", token);
-      api.defaults.headers.common["Authorization"] = `Token ${token}`;
-      return user;
-    }
-    alert(response.data);
-    return null;
-  };
+    
 
-  export const userLogin = async(username, password, setCurrentError, navigate) => {
+
+    console.log(`${response.status} ${response['user']}`)
+    if (response.status === 201) {
+      const {user } = response.data
+      return userLogin(user, password, setCurrentError)
+    }
+     
+  }
+  
+    catch (error) {
+    
+    setCurrentError(`registration failed, ${error}`)
+    return null;
+  }  };
+
+  export const userLogin = async(username, password, setCurrentError) => {
 
     try {
     let response = await api.post('user/login/', {
         username: username,
         password: password,
     });
-
 
         let {user, token} = response.data
         let is_super = false
@@ -45,7 +56,7 @@ export const api = axios.create({
         };
 
   } catch (error) {
-    console.error("Login error caught:", error);
+    console.error("Login error caught: ", error);
 
     
     setCurrentError(`   Invalid username or password`)

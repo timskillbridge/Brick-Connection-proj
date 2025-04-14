@@ -36,9 +36,9 @@ class Register_New_User(APIView):
             collection, created = Collection.objects.get_or_create(App_user = new_user, defaults={'App_user':new_user})
             login(request, new_user)
             return Response({
-                'App_User':new_user.email,
-                'token':token.key,
-                'collection': f'created with id {collection.id}'
+                    'user': new_user.username,
+                    'token': token.key,
+                    'is_super': new_user.is_superuser
             }, status= HTTP_201_CREATED
             )
         except Exception as e:
@@ -97,6 +97,7 @@ class UserInfo(LoggedInView):
             'username': request.user.username,
             'email' : request.user.email,
             'first name': request.user.first_name,
+            'profile_image': request.user.image.url if request.user.image else None,
             'last name': request.user.last_name if request.user.last_name != "" else 'None Provided',
             **({'site administrator':request.user.is_superuser}
                if request.user.is_superuser
