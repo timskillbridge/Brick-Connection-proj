@@ -12,6 +12,7 @@ class App_User(AbstractUser):
     last_name = models.CharField(max_length=50, null=True, blank=True, default="")
     email = models.EmailField(max_length=100, unique=True, validators = [v.EmailValidator])
     image = models.ImageField(upload_to='user/profile_images', null =True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']

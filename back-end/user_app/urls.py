@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import Register_New_User, Log_In, Register_Super, UserInfo, LogOut, UserDeleteView, All_Users
+from .views import Register_New_User, Log_In, Register_Super, UserInfo, LogOut, UserDeleteView, All_Users, A_user
 from os import environ, getenv
 from dotenv import load_dotenv
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path('delete/<int:user_id>/',UserDeleteView.as_view(), name='user-delete-view'),
     path('login/', Log_In.as_view(), name='login'),
     path('',UserInfo.as_view(), name='user-view'),
-    path('logout/',LogOut.as_view(), name='logout')
+    path('logout/',LogOut.as_view(), name='logout'),
+    path('a-user/<int:user_id>/', A_user.as_view(), name='a_user')
 
 ]

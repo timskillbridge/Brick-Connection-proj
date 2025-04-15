@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "@preact/preset-vite": "^2.10.1",
+    "@tailwindcss/vite": "^4.1.4",
     "@vitejs/plugin-react": "^4.3.4",
-    "preact": "^10.26.5"
+    "preact": "^10.26.5",
+    "tailwindcss": "^4.1.4"
   }
 }

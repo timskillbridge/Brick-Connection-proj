@@ -18,9 +18,6 @@ export const api = axios.create({
       email: username,
       password: password,
     });
-    
-
-
     console.log(`${response.status} ${response['user']}`)
     if (response.status === 201) {
       const {user } = response.data

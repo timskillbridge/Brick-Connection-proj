@@ -99,6 +99,7 @@ class UserInfo(LoggedInView):
             'first name': request.user.first_name,
             'profile_image': request.user.image.url if request.user.image else None,
             'last name': request.user.last_name if request.user.last_name != "" else 'None Provided',
+            'id' : request.user.id,
             **({'site administrator':request.user.is_superuser}
                if request.user.is_superuser
                else {'is_active':request.user.is_active})
@@ -164,10 +165,33 @@ class All_Users(LoggedInView):
     def get(self, request):
         if not request.user.is_superuser:
             return Response('You have insufficient access to this feature',status=HTTP_401_UNAUTHORIZED)
-        user_list = App_User.objects.all()
+        user_list = App_User.objects.all().order_by('id')
         serialized_users = Manage_UserSerializer(user_list, many=True)
         return Response({
             'user': serialized_users.data
         },
         status=HTTP_200_OK
         )
+class A_user(LoggedInView):
+    def get(self, request, user_id):
+        if not request.user.is_superuser:
+            return Response("Insufficient access, use the logged-in user endpoint /user/")
+        user = get_object_or_404(App_User, id=user_id)
+        serialized_user = App_UserSerializer(user)
+        return Response({
+            'user': serialized_user.data
+        }, status = HTTP_200_OK)
+    
+    def put(self, request, user_id):
+        data = request.data.copy()
+        if not request.user.is_superuser:
+            return Response("Insufficient access, use the logged-in user endpoint /user/")
+        
+        user = get_object_or_404(App_User, id = user_id)
+        print(f"-------{user}-----")
+        user.is_active = request.data.get('is_active')
+        serialized_user = App_UserSerializer(user, data = data, partial = True)
+        if serialized_user.is_valid():
+            serialized_user.save()
+            return Response(serialized_user.data, status=HTTP_200_OK)
+        return Response(serialized_user.errors, status=HTTP_400_BAD_REQUEST)
