@@ -166,9 +166,15 @@ class All_Users(LoggedInView):
         if not request.user.is_superuser:
             return Response('You have insufficient access to this feature',status=HTTP_401_UNAUTHORIZED)
         user_list = App_User.objects.all().order_by('id')
-        serialized_users = Manage_UserSerializer(user_list, many=True)
+        user_tokens = []
+        for user in user_list:
+            token = Token.objects.filter(user=user).first()
+            token_key = token.key if token else None
+            serialized_user = Manage_UserSerializer(user).data
+            serialized_user['token'] = token_key
+            user_tokens.append(serialized_user)
         return Response({
-            'user': serialized_users.data
+            'user': user_tokens
         },
         status=HTTP_200_OK
         )

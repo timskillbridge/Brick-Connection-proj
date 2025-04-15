@@ -18,7 +18,7 @@ const NavBar = ({ user, setUser, spr, setSpr }) => {
   const handleLogin = () => {
     navigate("/LoginPage/");
   };
-  console.log(spr);
+  // console.log(spr);
 
   return (
     <>

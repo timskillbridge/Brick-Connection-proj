@@ -6,8 +6,15 @@ import handleLogout from '../Components/NavBar'
 
 export default function ManageUserPage() {
   const [userprofile, setUserProfile] = useState([]);
-  const {setCurrentError, setSpr, setUser} = useOutletContext()
+  const {currentError, setCurrentError, setSpr, setUser} = useOutletContext()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCurrentError('');
+    },2000);
+    return () => clearTimeout(timeout);
+  },[currentError])
 
   const getUsers = async () => {
     try {
@@ -25,6 +32,10 @@ export default function ManageUserPage() {
   }, []);
 
   const DeleteUser = async (user_id) => {
+    const deleteAccount = window.confirm("Deleting this account cannot be undone; all associated sets and assets will be deleted");
+    if (!deleteAccount) { 
+      return
+    } else {
     const selfId = await api.get('user/')
     if(selfId.data.id == user_id) {
       alert("you cannot delete your own account")
@@ -33,11 +44,12 @@ export default function ManageUserPage() {
     const confirmUser = async (user_id) => {
       const { data } = await api.get(`user/a-user/${user_id}/`);
 
-      console.log(data.user);
+      // console.log(data.user);
       await api.post(`user/delete/${user_id}/`);
       getUsers();
     };
     confirmUser(user_id);
+  }
   };
 
   const deActivate = async (user_id) => {
@@ -68,23 +80,26 @@ export default function ManageUserPage() {
     let response = await api.put(`user/a-user/${user_id}/`, {
       is_active: !isActive,
     });
-    console.log(response.data);
+    // console.log(response.data);
     
     getUsers();
   };
 
   return (
     <>
-      <div>ManageUserPage</div>
+      <div className = "text-center font">
+       <h1>Manage Users</h1>
+ 
+        <p className="text-blue-700">{currentError? currentError:<br />}</p>
+        </div>
 
       <table className="border-separate border border-gray-400 ...">
         <thead>
           <tr>
             <th className="text-center border border-gray-300 px-4">Delete</th>
             <th className="text-center border border-gray-300 px-4">User ID</th>
-            <th className="text-center border border-gray-300 px-4">
-              Username
-            </th>
+            <th className="text-center border border-gray-300 px-4">Username</th>
+            <th className="text-center border border-gray-300 px-4">token</th>
             <th className="text-center border border-gray-300 px-4">Active</th>
           </tr>
         </thead>
@@ -100,8 +115,21 @@ export default function ManageUserPage() {
                 </button>
               </td>
               <td className="text-center border border-gray-300">{user.id}</td>
-              <td className="text-center border border-gray-300">
-                {user.username}
+              <td className="text-center border border-gray-300">{user.username}</td>
+              <td className="px-1 text-center border border-gray-300">
+              {user.token ? (
+    <button
+      onClick={() => {
+        navigator.clipboard.writeText(user.token);
+        setCurrentError("Token copied to clipboard!");
+      }}
+      className="text-blue-600 underline hover:text-blue-800 transition"
+    >
+      Copy Token
+    </button>
+  ) : (
+    "User not signed-in"
+  )}
               </td>
               <td className="text-center border border-gray-300">
                 <button

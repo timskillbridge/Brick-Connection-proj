@@ -1,18 +1,37 @@
+
+# Django and rest_framework
 from django.shortcuts import render, get_object_or_404
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import permissions
 from rest_framework.status import \
 HTTP_200_OK,\
 HTTP_201_CREATED,\
 HTTP_204_NO_CONTENT,\
-HTTP_400_BAD_REQUEST
+HTTP_400_BAD_REQUEST,\
+HTTP_404_NOT_FOUND,\
+HTTP_500_INTERNAL_SERVER_ERROR
+
+#My code
 from user_app.views import LoggedInView
 from .models import Set_Group, Single_Set, Collection
 from .serializers import Set_GroupSerializer, Single_SetSerializer, CollectionSerializer
 from user_app.serializers import App_UserSerializer
+
+#additional needed libraries
 import requests
 from requests_oauthlib import OAuth1
 from .utility import get_icon
+import os
+from PIL import Image
+from rembg import remove
+from io import BytesIO
+from urllib.parse import urlparse
+
+
 
 
 '''
@@ -208,3 +227,37 @@ class Single_Sets(LoggedInView):
             status=HTTP_201_CREATED
             )
         return Response(serialized_single_set.errors, status=HTTP_400_BAD_REQUEST)
+    
+class ProcessJPEG(APIView):
+    def post(self, request):
+        image_address = request.data.get('image_address')
+        if not image_address:
+            return Response({"error":"No valid image provided"}, status = HTTP_400_BAD_REQUEST)
+        try:
+            image_name = os.path.basename(urlparse(image_address).path)
+            base = os.path.splitext(image_name)[0]
+            output_name = f"{base}.png"
+            assets_dir = os.path.join(settings.BASE_DIR,'assets')
+            os.makedirs(assets_dir, exist_ok=True)
+            output=os.path.join(assets_dir, output_name)
+            if os.path.exists(output):
+                return Response({
+                    'path':output_name
+                }, status=HTTP_200_OK)
+            response = requests.get(image_address)
+            if response.status_code != 200:
+                return Response({'error':'could not grab image'}
+                ,status=HTTP_404_NOT_FOUND )
+            grab_image = Image.open(BytesIO(response.content)).convert("RGBA")
+            output_image = remove(grab_image)
+            output_image.save(output)
+            image_url = requests.build_absolute_url(f"/assets/{output_name}")
+            return Response({
+                'path':image_url
+            }, status=HTTP_201_CREATED)
+        except Exception as e:
+            return Response({
+                'error':str(e)
+            },
+            status=HTTP_500_INTERNAL_SERVER_ERROR
+            )

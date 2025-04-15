@@ -14,7 +14,7 @@ class App_UserSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'image',
-            'is_active'
+            'is_active',
 
         ]
         read_only_fields = ['id']
