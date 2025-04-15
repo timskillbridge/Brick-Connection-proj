@@ -22,7 +22,7 @@ const NavBar = ({ user, setUser, spr, setSpr }) => {
 
   return (
     <>
-      <div id="NavBar">
+      <div id="NavBar" className="bg-yellow-100 text-gray-900" >
         <ul
           style={{
             listStyleType: "none",
