@@ -3,7 +3,7 @@ import {useState} from 'react';
 import { Form, Button } from 'react-bootstrap'
 import { Container, Row, Col, Tab, Tabs, FloatingLabel } from 'react-bootstrap';
 import { useOutletContext, useNavigate } from 'react-router-dom'
-import { userLogin, confirmUser, userRegistration } from '../utilities'
+import { userLogin, confirmUser, userRegistration } from '../Utility/user_utilities'
 
 const Login = () => {
   const [username, setUsername] = useState("");

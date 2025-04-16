@@ -26,4 +26,12 @@ class Set_GroupSerializer(ModelSerializer):
     class Meta:
         model = Set_Group
         fields = "__all__"
-        
+
+class CustomSetSerializer(ModelSerializer):
+    owner_username = SerializerMethodField()
+    class Meta:
+        model = Single_Set
+        fields = "__all__"
+
+    def get_owner_username(self, obj):
+        return getattr(obj.set_group.collection.App_user, "username", None)

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { api } from "../utilities";
+import { api } from "../Utility/user_utilities";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import handleLogout from '../Components/NavBar'
 

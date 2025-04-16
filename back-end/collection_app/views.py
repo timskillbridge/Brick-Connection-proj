@@ -18,7 +18,7 @@ HTTP_500_INTERNAL_SERVER_ERROR
 #My code
 from user_app.views import LoggedInView
 from .models import Set_Group, Single_Set, Collection
-from .serializers import Set_GroupSerializer, Single_SetSerializer, CollectionSerializer
+from .serializers import Set_GroupSerializer, Single_SetSerializer, CollectionSerializer, CustomSetSerializer
 from user_app.serializers import App_UserSerializer
 
 #additional needed libraries
@@ -261,3 +261,33 @@ class ProcessJPEG(APIView):
             },
             status=HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+'''
+-----------------------------------------
+|           GET ALL             |
+-----------------------------------------
+'''
+class Custom_Set(APIView):
+# 
+# ---------------------
+# |     GET ALL       |
+# ---------------------
+# 
+    def get(self, request):
+        custom_sets = Single_Set.objects.filter(custom = True).select_related("set_group__collection__App_user")
+        serialized_sets = CustomSetSerializer(custom_sets, many=True)
+        return Response({
+            'all_sets': serialized_sets.data,
+        },
+        status=HTTP_200_OK
+        )
+    
+class Official_Sets(APIView):
+    def get(self, request):
+        official_sets = Single_Set.objects.filter(custom = False)
+        serialized_sets = Single_SetSerializer(official_sets,many=True)
+        return Response({
+            'sets':serialized_sets
+        },
+        status=HTTP_200_OK
+        )

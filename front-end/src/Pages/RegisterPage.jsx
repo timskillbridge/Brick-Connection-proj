@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect} from 'react'
 import { Form, Button } from 'react-bootstrap'
-import { userRegistration } from '../utilities';
+import { userRegistration } from '../Utility/user_utilities';
 import { useOutletContext } from "react-router-dom";
 
 const Register = () => {

@@ -9,7 +9,7 @@ import RegisterPage from './Pages/RegisterPage';
 import ErrorPage from './Pages/ErrorPage';
 import NotFoundPage from './Pages/NotFoundPage';
 import ManageUserPage from './Pages/ManageUserPage'
-import { confirmUser } from './utilities';
+import { confirmUser } from './Utility/user_utilities';
 
 
 const router = createBrowserRouter([

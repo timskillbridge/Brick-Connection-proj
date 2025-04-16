@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { Navigate, Outlet, useLoaderData, useNavigate } from 'react-router-dom'
 import NavBar from './Components/NavBar'
-import { api } from './utilities';
+import { api } from './Utility/user_utilities';
 
 export function App() {
   const [user, setUser] = useState(useLoaderData()['username']);
@@ -32,6 +32,7 @@ export function App() {
     <>
     
     <NavBar user = {user} setUser={setUser} spr = {spr} setSpr = {setSpr}/>
+    <div className="h-4 bg-[#DA291C]"></div>
     <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr}} />
     </>
   )
