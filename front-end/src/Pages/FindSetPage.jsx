@@ -15,19 +15,19 @@ const [builddata,setBuilddata] = useState()
 const [loading, setLoading] = useState()
 // const [prev, setPrev] = useState("")
 // const [next, setNext] = useState("")
-  const {user, setUser, currentError, setCurrentError, spr, setSpr} = useOutletContext();
+const context = useOutletContext();
 
 const figsCall = async (term) => {
   setLoading(true)
   try {
     const returnedFigs = await searchFigs(term);
-    if (returnedFigs.length == 0) {setCurrentError('Oops, looks like there were no results for that search')}
+    if (returnedFigs.length == 0) {context.setCurrentError('Oops, looks like there were no results for that search')}
     // if(returnedFigs.next) {setNext(returnedFigs.next)}
-    console.log(returnedFigs)
+    // console.log(returnedFigs)
     setFigdata(returnedFigs)
   }
   catch (error) {
-    console.log(error)
+    console.err(error)
   } finally {
     setLoading(false)
   }
@@ -35,10 +35,10 @@ const figsCall = async (term) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setCurrentError('');
+      context.setCurrentError('');
     },2000);
     return () => clearTimeout(timeout);
-  },[currentError])
+  },[context.currentError])
 
   return (
 <>
@@ -68,16 +68,16 @@ const figsCall = async (term) => {
                 
         </div>
         <div className="w-full min-w-full flex flex-wrap h-auto rounded gap-3 items-end">
-        <p style={{color: 'red'}}>{currentError}</p>
+        <p style={{color: 'red'}}>{context.currentError}</p>
         {loading? (
-        <LoadingSpinner user={user}/>
+        <LoadingSpinner />
     )
     : ""}
     {
     figdata? (
     figdata.map((fig) => (
       <div key={fig.set_num} className="flex flex-col h-full">
-      <Set setData = {fig}/>
+      <Set setData = {fig} context={context}/>
       </div>
     ))
 ) : ""

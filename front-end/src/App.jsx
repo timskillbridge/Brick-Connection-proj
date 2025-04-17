@@ -14,16 +14,19 @@ export function App() {
   const [userSets, setUserSets] = useState([]);
 
   const isManaged = (set) => {
-    const allsets = []
-    allsets.push(manageSets)
-    allsets.push(manageMiniFigs)
-    if(allsets.filter((isManaged) => isManaged.id === set.id).length) {
+    const allsets = [...manageSets, ...manageMiniFigs];
+    return `${allsets.filter((ismanaged) => ismanaged.set_num === set.set_num).length}`
+  }
+
+  const isDupe = (instance, checkArray) => {
+    if(checkArray.filter((item) => item.name === instance.name).length) {
       return true
     }
     else {
       return false
     }
   }
+
   
   useEffect(() => {
     if (user) {
@@ -47,7 +50,7 @@ export function App() {
     
     <NavBar user = {user} setUser={setUser} spr = {spr} setSpr = {setSpr}/>
     <div className="h-4 bg-[#DA291C]"></div>
-    <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr, manageMiniFigs, setManageMiniFigs, manageSets, setManageSets, userSets, setUserSets, userFigs, setUserFigs, isManaged}} />
+    <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr, manageMiniFigs, setManageMiniFigs, manageSets, setManageSets, userSets, setUserSets, userFigs, setUserFigs, isManaged, isManaged, isDupe}} />
     </>
   )
 
@@ -55,3 +58,5 @@ export function App() {
 
 
 export default App
+
+

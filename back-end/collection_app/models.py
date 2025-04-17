@@ -27,6 +27,7 @@ class Single_Set(models.Model):
     num_parts = models.PositiveIntegerField(blank = True, null = True)
     difficulty_url = models.CharField(max_length=255, null = True, blank = True)
     set_img_url = models.CharField(max_length=255, null = True, blank = True)
+    instructions = models.CharField(null =True, blank=True)
     custom = models.BooleanField(default=False)
     set_group = models.ForeignKey(Set_Group, on_delete=models.CASCADE, related_name='single_set', blank=True, null=True)
     image = models.ImageField(upload_to='user/custom_sets', null =True, blank=True)

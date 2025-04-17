@@ -48,7 +48,7 @@ const NavBar = ({ user, setUser, spr, setSpr }) => {
       <Nav.Link as={Link} to="/FindSetPage/">Find a Set</Nav.Link>
 
       {user && (
-        <Nav.Link as={Link} to="/MyPage/">My Page</Nav.Link>
+        <Nav.Link as={Link} to="/MyPage/">My Pool</Nav.Link>
       )}
     </div>
 

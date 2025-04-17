@@ -12,7 +12,7 @@ export default function HomePage() {
   const [mini,setMini] = useState()
   const [sets,setSets] = useState()
   const [loading, setLoading] = useState(true);
-const {user, setManageMiniFigs, setManageSets, isManaged} = useOutletContext()
+  const context = useOutletContext();
 
   // const grabImage = async () => {
   //   // const data = await api.get()
@@ -104,7 +104,7 @@ const {user, setManageMiniFigs, setManageSets, isManaged} = useOutletContext()
   }, []);
 
   useEffect(() => {
-console.log(mini)
+// console.log(mini)
   },[mini])
 
   return (
@@ -117,7 +117,7 @@ console.log(mini)
     This site is your personal LEGO set tracker and creative catalog. Whether you're collecting official sets or designing custom MOCs (My Own Creations), we make it easy to organize, visualize, and share your builds.
   </p>
   <p className="text-md text-gray-700">
-    Get started by adding your sets, browsing minifigs, or showing off your custom designs!
+    Get started by searching some sets or take from those below.  Add to your pool to manage on your "My Pool" page where you can add to your permentant collection.  Happy collecting!
   </p>
 </section>
 
@@ -137,7 +137,7 @@ console.log(mini)
     mini.map((fig) => (
 
       <div key={fig.set_num} className="flex flex-col h-full gap-3">
-      <Set setData = {fig} user={user} isManaged={isManaged}/>
+      <Set setData = {fig} context={context}/>
       </div>
       )))
     //   <div key={fig.set_num} className="bg-white p-2 rounded shadow hover:scale-105 transition flex flex-col justify-start">
@@ -182,7 +182,7 @@ sets.map((set) => (
   // </p>
   // </div>
   <div key={set.set_num} className="flex flex-col h-full gap-10">
-  <Set setData = {set} user={user} isManaged={isManaged}/>
+  <Set setData = {set} context={context}/>
   </div>
 )
 )

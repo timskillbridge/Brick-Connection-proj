@@ -4,6 +4,7 @@ import axios from 'axios'
 
 const headers = {
   Authorization: `key ${brick}`,
+  'Content-Type': 'application/json',
 };
 
 export const searchFigs = async(term) => {
@@ -19,7 +20,7 @@ export const searchFigs = async(term) => {
     const rawData= response.data.results
 
     const filteredResponse = rawData.filter(item => item.set_img_url != null);
-    console.log(filteredResponse)
+    // console.log(filteredResponse)
     return filteredResponse
 
   }
@@ -83,7 +84,7 @@ export const grabImage = async () => {
           setExist.add(sets_img[j]);
         }
       }
-      console.log([mixed,setMixed])
+      // console.log([mixed,setMixed])
       return [mixed,setMixed]
     } catch (error) {
         console.error("failed to grab figs", error);

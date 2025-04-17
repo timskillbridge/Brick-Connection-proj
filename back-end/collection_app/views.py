@@ -137,13 +137,13 @@ class A_Set_Group(LoggedInView):
 # |       PUT         |
 # ---------------------
 # 
-    def put(self, request, set_group):
+    def put(self, request, set_groups):
         data = request.data.copy()
         if 'set_name' in data:
             collection_id = Collection.objects.get(App_user = request.user).id
             # set = Set_Group.objects.get(id=set_group, collection = collection_id)
             try:
-                a_set_group = get_object_or_404(request.user.collection.set_group, id = set_group, collection=collection_id)
+                a_set_group = get_object_or_404(request.user.collection.set_group, id = set_groups, collection=collection_id)
             except:
                 return Response('Invalid set group or the specified set group belongs to another user', status=HTTP_400_BAD_REQUEST)
             a_set_group.change_set_name(data['set_name'])
@@ -157,11 +157,11 @@ class A_Set_Group(LoggedInView):
 # ---------------------
 # 
 
-    def delete(self, request, set_group):
+    def delete(self, request, set_groups):
         collection_id = Collection.objects.get(App_user = request.user).id
         # set = Set_Group.objects.get(id=set_group, collection = collection_id)
         try:
-            a_set_group = get_object_or_404(request.user.collection.set_group, id = set_group, collection=collection_id)
+            a_set_group = get_object_or_404(request.user.collection.set_group, id = set_groups, collection=collection_id)
         except:
             return Response('Invalid set group or the specified set group belongs to another user', status=HTTP_400_BAD_REQUEST)
         a_set_group.delete()
@@ -282,6 +282,8 @@ class Custom_Set(APIView):
         status=HTTP_200_OK
         )
     
+
+    
 class Official_Sets(APIView):
     def get(self, request):
         official_sets = Single_Set.objects.filter(custom = False)
@@ -291,3 +293,16 @@ class Official_Sets(APIView):
         },
         status=HTTP_200_OK
         )
+    
+class All_User_Sets(LoggedInView):
+    def get(self, request, user_id):
+        try: 
+            all_sets = Single_Set.objects.filter(user_id = user_id)
+            serialized_sets = Single_SetSerializer(all_sets, many=True)
+            return Response({
+                'sets':serialized_sets
+            },
+            status=HTTP_200_OK
+            )
+        except:
+            return Response("Error gathering user's sets", status=HTTP_400_BAD_REQUEST)
