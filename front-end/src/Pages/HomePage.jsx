@@ -4,14 +4,15 @@ import { grabImage } from "../Utility/brickable_api";
 import LoadingSpinner from '../Components/Loading_Spinner'
 // import axios from "axios";
 import { Figure } from "react-bootstrap";
-
+import Set from '../Components/Set'
+import { useOutletContext } from "react-router-dom";
 
 export default function HomePage() {
   const brick = import.meta.env.VITE_BRICKABLE;
   const [mini,setMini] = useState()
   const [sets,setSets] = useState()
   const [loading, setLoading] = useState(true);
-
+const {user, setManageMiniFigs, setManageSets, isManaged} = useOutletContext()
 
   // const grabImage = async () => {
   //   // const data = await api.get()
@@ -124,7 +125,7 @@ console.log(mini)
 
 <section className="py-8 px-6 max-w-6xl mx-auto">
   <h2 className="text-2xl font-bold text-center mb-4">Featured Minifigures</h2>
-  <div className="grid grid-cols-5 md:grid-cols-10 gap-4">
+  <div className="w-full min-w-full flex flex-wrap h-auto rounded gap-3 items-end justify-center">
 
     <>
 
@@ -134,14 +135,21 @@ console.log(mini)
     :
     (
     mini.map((fig) => (
-      <div key={fig.set_num} className="bg-white p-2 rounded shadow hover:scale-105 transition flex flex-col justify-start">
-      <img src={fig.set_img_url} alt={fig.name} className="w-xs h-auto rounded" />
-      <p className="text-center mt-2 text-sm font-medium">{fig.name}
-      <br /><br />{fig.num_parts} parts.
-      </p>
+
+      <div key={fig.set_num} className="flex flex-col h-full gap-3">
+      <Set setData = {fig} user={user} isManaged={isManaged}/>
       </div>
-    ))
-    )
+      )))
+    //   <div key={fig.set_num} className="bg-white p-2 rounded shadow hover:scale-105 transition flex flex-col justify-start">
+    //   <img src={fig.set_img_url} alt={fig.name} className="w-xs h-auto rounded" />
+    //   <p className="text-center mt-2 text-sm font-medium">{
+    // fig.name.indexOf(",") == -1?fig.name:fig.name.slice(0, fig.name.indexOf(","))
+    // }
+    //   <br /><br />{fig.num_parts} parts.
+    //   </p>
+    //   </div>
+    // ))
+    // )
    
     }
 
@@ -155,8 +163,8 @@ console.log(mini)
 
 
 <section className="py-8 px-6 max-w-6xl mx-auto">
-  <h2 className="text-2xl font-bold text-center mb-6">Explore Random Sets</h2>
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+  <h2 className="text-2xl font-bold text-center mb-6">Explore sets like:</h2>
+  <div className="w-full min-w-full flex flex-wrap h-auto rounded gap-10 items-end justify-center">
     
 
     <>
@@ -167,13 +175,17 @@ console.log(mini)
 :
 (
 sets.map((set) => (
-  <div key={set.set_num} className="bg-white p-2 rounded shadow hover:scale-105 transition flex flex-col justify-end">
-  <img src={set.set_img_url} alt={set.name} className="w-xs h-auto rounded align-bottom" />
-  <p className="text-center mt-2 text-sm font-medium">{set.name}
-    <br /><br />Set number: {set.set_num} | {set.num_parts} parts.
-  </p>
+  // <div key={set.set_num} className="bg-white p-2 rounded shadow hover:scale-105 transition flex flex-col justify-end">
+  // <img src={set.set_img_url} alt={set.name} className="w-xs h-auto rounded align-bottom" />
+  // <p className="text-center mt-2 text-sm font-medium">{set.name}
+  //   <br /><br />Set number: {set.set_num} | {set.num_parts} parts.
+  // </p>
+  // </div>
+  <div key={set.set_num} className="flex flex-col h-full gap-10">
+  <Set setData = {set} user={user} isManaged={isManaged}/>
   </div>
-))
+)
+)
 )
 }
 </>

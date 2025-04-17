@@ -5,6 +5,7 @@ import { Container, Row, Col, Tab, Tabs, FloatingLabel } from 'react-bootstrap';
 import { searchFigs } from '../Utility/brickable_api';
 import LoadingSpinner from '../Components/Loading_Spinner';
 import Set from '../Components/Set'
+import { useOutletContext } from 'react-router-dom';
 
 export default function FindSet() {
 const [fig,setFig] = useState()
@@ -14,11 +15,13 @@ const [builddata,setBuilddata] = useState()
 const [loading, setLoading] = useState()
 // const [prev, setPrev] = useState("")
 // const [next, setNext] = useState("")
+  const {user, setUser, currentError, setCurrentError, spr, setSpr} = useOutletContext();
 
 const figsCall = async (term) => {
   setLoading(true)
   try {
     const returnedFigs = await searchFigs(term);
+    if (returnedFigs.length == 0) {setCurrentError('Oops, looks like there were no results for that search')}
     // if(returnedFigs.next) {setNext(returnedFigs.next)}
     console.log(returnedFigs)
     setFigdata(returnedFigs)
@@ -30,12 +33,17 @@ const figsCall = async (term) => {
   }
 }
 
-
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCurrentError('');
+    },2000);
+    return () => clearTimeout(timeout);
+  },[currentError])
 
   return (
 <>
    
-    <div className="flex flex-col bg-[#FFD700] text-gray-900 text-center font-bold"><h1>Find</h1></div>
+    <div className="flex flex-col bg-[#FFD700] text-gray-900 text-center font-bold"><h1>Find your bricks!</h1></div>
 
     <Tabs
       defaultActiveKey="profile"
@@ -46,6 +54,7 @@ const figsCall = async (term) => {
       <Tab eventKey="MiniFig"
       title={<span className="rounded-t-lg bg-white border-4 border-yellow-500 px-4 py-2 shadow-md flex flex-col p-0 m-0">Minifigs</span>}
       className="bg-[#FFACD] p-4">
+       
         <h2 className="text-3xl font-bold text-red-600 mb-4">🧍‍♂️ Search for LEGO Minifigs</h2>
         <div className="flex justify-center mb-6">
         <form onSubmit={(event) => [event.preventDefault(), figsCall(fig)]}>
@@ -56,11 +65,12 @@ const figsCall = async (term) => {
         onChange= {(e) => setFig(e.target.value)}
         />
         </form>
-        
+                
         </div>
         <div className="w-full min-w-full flex flex-wrap h-auto rounded gap-3 items-end">
+        <p style={{color: 'red'}}>{currentError}</p>
         {loading? (
-        <LoadingSpinner />
+        <LoadingSpinner user={user}/>
     )
     : ""}
     {
@@ -78,7 +88,7 @@ const figsCall = async (term) => {
       eventKey="sets"
       title={<span className="rounded-t-lg bg-white border-4 border-yellow-500 px-4 py-2 shadow-md flex flex-col">Build Sets</span>}
       className="bg-[#FFFACD p-4">
-        <h2 className="text-3xl font-bold text-blue-600 mb-4">🧱 Discover LEGO Sets</h2>
+        <h2 className="text-2xl font-bold text-blue-600 mb-4">🧱 Discover LEGO Sets</h2>
         <div className="flex justify-center mb-6">
           <form onSubmit={(event) => [event.preventDefault()]}>
         <input

@@ -8,8 +8,22 @@ export function App() {
   const [user, setUser] = useState(useLoaderData()['username']);
   const [spr, setSpr] = useState(useLoaderData()['is_super']);
   const [currentError, setCurrentError] = useState('');
+  const [manageMiniFigs, setManageMiniFigs] = useState([]);
+  const [manageSets, setManageSets] = useState([]);
+  const [userFigs, setUserFigs] = useState([]);
+  const [userSets, setUserSets] = useState([]);
 
-
+  const isManaged = (set) => {
+    const allsets = []
+    allsets.push(manageSets)
+    allsets.push(manageMiniFigs)
+    if(allsets.filter((isManaged) => isManaged.id === set.id).length) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
   
   useEffect(() => {
     if (user) {
@@ -33,7 +47,7 @@ export function App() {
     
     <NavBar user = {user} setUser={setUser} spr = {spr} setSpr = {setSpr}/>
     <div className="h-4 bg-[#DA291C]"></div>
-    <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr}} />
+    <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr, manageMiniFigs, setManageMiniFigs, manageSets, setManageSets, userSets, setUserSets, userFigs, setUserFigs, isManaged}} />
     </>
   )
 
