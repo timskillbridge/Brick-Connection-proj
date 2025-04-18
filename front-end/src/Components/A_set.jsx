@@ -49,7 +49,16 @@ return (
 <>
 
 {setData.set_num.slice(0,3) =='fig'? (
-    <Card style={{ width: '12rem' }} className="flex flex-col h-[22rem] border border-gray-300 rounded-lg shadow-sm bg-white hover:scale-105 transition-transform duration-300">
+    <Card style={{ width: '12rem' }} className="relative flex flex-col h-[22rem] border border-gray-300 rounded-lg shadow-sm bg-white hover:scale-105 transition-transform duration-300">
+        <button
+        variant="danger"
+        className="absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 text-white font-bold py-2 px-2 rounded shadow-md transition duration-300 "
+        onClick = {() => {
+            context.setManageMiniFigs(prevArray => prevArray.filter(item => item.set_num !==setData.set_num))
+        }}
+        >
+             X 
+             </button>
     <Card.Img variant="top" src={setData.set_img_url} className="w-full h-40 object-contain"/>
     <Card.Body className="flex flex-col justify-between flex-grow">
     <Card.Title>
@@ -68,7 +77,7 @@ return (
      {selectSet?.set_name? (
       <Button 
       variant="primary"
-      className="w-1/2 text-sm"
+      className="w-auto text-sm"
       onClick = { () => {
         handleSubmit(setData)
       }}
@@ -85,7 +94,16 @@ return (
   </Card>)
 :
 (
-  <Card style={{ width: '30rem' }} className="flex flex-col h-full border border-gray-300 rounded-lg shadow-sm bg-white hover:scale-105">
+  <Card style={{ width: '30rem' }} className="relative flex flex-col h-full border border-gray-300 rounded-lg shadow-sm bg-white hover:scale-105">
+     <button
+        variant="danger"
+        className="absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 text-white font-bold py-2 px-2 rounded shadow-md transition duration-300 "
+        onClick = {() => {
+            context.setManageSets(prevArray => prevArray.filter(item => item.set_num !==setData.set_num))
+        }}
+        >
+             X 
+             </button>
   <Card.Img variant="top" src={setData.set_img_url} className="w-full h-52 object-contain"/>
   <Card.Body className="flex flex-col  h-full">
     <Card.Title>

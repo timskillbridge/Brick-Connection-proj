@@ -30,6 +30,9 @@ from PIL import Image
 from rembg import remove
 from io import BytesIO
 from urllib.parse import urlparse
+import base64
+import uuid
+from pathlib import Path
 
 
 
@@ -227,41 +230,43 @@ class Single_Sets(LoggedInView):
             status=HTTP_201_CREATED
             )
         return Response(serialized_single_set.errors, status=HTTP_400_BAD_REQUEST)
-    
+
+def fix_base64_padding(b64_string):
+    missing_padding = len(b64_string) % 4
+    if missing_padding:
+        b64_string += '=' * (4-missing_padding)
+    return b64_string
+
 class ProcessJPEG(APIView):
     def post(self, request):
-        image_address = request.data.get('image_address')
-        if not image_address:
+        image_data = request.data.get('image')
+        if not image_data:
             return Response({"error":"No valid image provided"}, status = HTTP_400_BAD_REQUEST)
         try:
-            image_name = os.path.basename(urlparse(image_address).path)
-            base = os.path.splitext(image_name)[0]
-            output_name = f"{base}.png"
-            assets_dir = os.path.join(settings.BASE_DIR,'assets')
-            os.makedirs(assets_dir, exist_ok=True)
-            output=os.path.join(assets_dir, output_name)
-            if os.path.exists(output):
-                return Response({
-                    'path':output_name
-                }, status=HTTP_200_OK)
-            response = requests.get(image_address)
-            if response.status_code != 200:
-                return Response({'error':'could not grab image'}
-                ,status=HTTP_404_NOT_FOUND )
-            grab_image = Image.open(BytesIO(response.content)).convert("RGBA")
-            output_image = remove(grab_image)
-            output_image.save(output)
-            image_url = requests.build_absolute_url(f"/assets/{output_name}")
+            if image_data.startswith('data:image'):
+                image_data = image_data.split('base64')[-1]
+                image_data = base64.b64decode(image_data)
+
+            image = Image.open(BytesIO(image_data)).convert("RGBA")
+            output_image = remove(image)
+            unique_id = uuid.uuid4().hex[:8]
+            output_name = f"img_{unique_id}.png"
+            BASE_DIR = Path(__file__).resolve().parents[2]
+            file_path = BASE_DIR / 'front-end' / 'public' / 'assets' / 'images'
+            # asset_dir = os.path.join(settings.BASE_DIR, 'assets')
+            os.makedirs(file_path, exist_ok=True)
+            output_path = os.path.join(file_path, output_name)
+            output_image.save(output_path)
+            local_path = output_path.split('assets')[-1]
+            image_url = f"/assets{local_path}"
             return Response({
-                'path':image_url
-            }, status=HTTP_201_CREATED)
+                'path': image_url
+            }, status=HTTP_200_OK)
         except Exception as e:
             return Response({
                 'error':str(e)
-            },
-            status=HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
+            }, status = HTTP_500_INTERNAL_SERVER_ERROR)
+        
 '''
 -----------------------------------------
 |           GET ALL             |

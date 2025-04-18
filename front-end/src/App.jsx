@@ -7,7 +7,7 @@ import { api } from './Utility/user_utilities';
 export function App() {
   const [user, setUser] = useState(useLoaderData()['username']);
   const [spr, setSpr] = useState(useLoaderData()['is_super']);
-  const [currentError, setCurrentError] = useState('');
+  const [currentError, setCurrentError] = useState("");
   const [manageMiniFigs, setManageMiniFigs] = useState([]);
   const [manageSets, setManageSets] = useState([]);
   const [userFigs, setUserFigs] = useState([]);
