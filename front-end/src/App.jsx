@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { Navigate, Outlet, useLoaderData, useNavigate } from 'react-router-dom'
+import { Navigate, Outlet, useLoaderData, useNavigate, useLocation, useOutletContext} from 'react-router-dom'
 import NavBar from './Components/NavBar'
 import { api } from './Utility/user_utilities';
 
@@ -12,6 +12,8 @@ export function App() {
   const [manageSets, setManageSets] = useState([]);
   const [userFigs, setUserFigs] = useState([]);
   const [userSets, setUserSets] = useState([]);
+  const location = useLocation()
+  const context = useOutletContext()
 
   const isManaged = (set) => {
     const allsets = [...manageSets, ...manageMiniFigs];
@@ -26,6 +28,10 @@ export function App() {
       return false
     }
   }
+
+  useEffect(() => {
+    setCurrentError("");
+  }, [location.pathname]);
 
   
   useEffect(() => {

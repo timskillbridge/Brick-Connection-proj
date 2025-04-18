@@ -104,7 +104,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-// console.log(mini)
+console.log(mini)
   },[mini])
 
   return (

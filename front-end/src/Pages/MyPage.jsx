@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import {api} from '../Utility/user_utilities'
 import { useOutletContext } from 'react-router-dom'
 import Set from '../Components/Set'
-import { Button, NavItem } from 'react-bootstrap'
+import { Button, NavItem, Tab, Tabs } from 'react-bootstrap'
+import A_set from "../Components/A_set";
 import axios from "axios";
 
 export default function MyPage() {
@@ -38,13 +39,19 @@ const uniqueMiniFigs = Array.from(
 const uniqueSets = Array.from(
   new Map(context.manageSets.map(fig => [fig.set_num, fig])).values()
 );
+console.log(uniqueSets)
 
 const handleSetGroupCreate = async (groupName) => {
-  console.log(groupName)
+
+  if(!groupName) {
+    context.setCurrentError("Name cannot be blank")
+    return
+  }
+  // console.log(groupName)
   const {data} = await api.get("collection/set_groups/");
-  console.log(data)
+  // console.log(data)
   const setGroup = data['set_groups']
-  console.log(setGroup)
+  // console.log(setGroup)
   const filtered = setGroup.filter((item) => groupName ==item.set_name)
   console.log(`does not exist, creating |${filtered}|`)
   if (filtered.length ==0) {
@@ -64,6 +71,7 @@ const handleSetGroupCreate = async (groupName) => {
 }
 
 const handleSelectGroup = (group) => {
+
   setSelectSet(group)
   console.log(group)
 }
@@ -77,12 +85,19 @@ const handleDoubleClick = async () => {
   }
   
 }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      context.setCurrentError('');
+    },2000);
+    return () => clearTimeout(timeout);
+  },[context.currentError])
 
   return (
+    
 <>
 
 
-<div className="min-h-screen bg-[#FFE400] py-10 px-4 flex flex-col items-center">
+<div className="min-h-1/4 bg-[#FFE400] py-10 px-4 flex flex-col items-center mt-0 pt-0">
   
   {/* Header */}
   <h2 className="text-4xl font-extrabold text-[#DA291C] mb-6 drop-shadow-lg">
@@ -94,24 +109,32 @@ const handleDoubleClick = async () => {
     onSubmit={(event) => {
       event.preventDefault();
       handleSetGroupCreate(groupName);
+      setGroupName("")
+
     }}
     className="w-full max-w-xl bg-white p-6 rounded-lg shadow-lg flex flex-col items-center space-y-4 border-4 border-yellow-400"
   >
     <input
+      value={groupName}
       maxLength="50"
       type="text"
       placeholder="What should it be called?"
       className="w-full px-4 py-2 rounded-md border-2 border-gray-300 shadow-inner focus:outline-none focus:ring-2 focus:ring-yellow-400 text-lg"
-      onChange={(e) => setGroupName(e.target.value)}
+      onChange={(e) => setGroupName(e.target.value.toLocaleLowerCase())}
     />
+
     <button
       type="submit"
       className="bg-[#DA291C] hover:bg-red-700 text-white font-bold py-2 px-6 rounded shadow-md transition duration-300"
     >
       Add Group
     </button>
-  </form>
 
+  </form>
+  <div className="relative w-screen h-14">
+  <p  className={`absolute top-0 left-1/2 -translate-x-1/2 text-center text-[#DA291C] px-4 py-1 
+    ${context.currentError ? 'border-2 border-amber-500' : ''}`}>{context.currentError}</p>
+  </div>
   {/* Set Group Selection */}
   <div className="mt-8 w-full max-w-5xl">
     <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
@@ -137,37 +160,56 @@ const handleDoubleClick = async () => {
     </div>
   </div>
 
-  {/* Set Cards */}
-  <div className="mt-10 w-full max-w-6xl">
-    <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-      Available Sets
-    </h3>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      
-      Component Cards
-    </div>
-  </div>
 </div>
 
 
-    <div>My Piece Pool</div>
-    {Array.isArray(set_Groups) && set_Groups.map((set) => (
-  <div key={set.set_name} className="flex flex-col h-full gap-3">
-    {set.set_name}
-  </div>
-))}
 
-    {uniqueMiniFigs.map((fig) => (
+    <Tabs
+      defaultActiveKey="profile"
+      id="find-sets"
+      className="bg-[#FFD700] text-gray-900 flex flex-row p-0 m-0"
+      fill
+    >
+      <Tab eventKey="MiniFig"
+      title={<span className="rounded-t-lg bg-white border-4 border-yellow-500 px-4 py-2 shadow-md flex flex-col p-0 m-0">Minifigs</span>}
+      className="bg-[#FFACD] p-4">
+       
+        <h2 className="text-3xl font-bold text-red-600 mb-4">🧍‍♂️Minifig Pool</h2>
+        <div className="flex justify-center mb-6">
+       {context.figData}
+                
+        </div>
+        <div className="w-full min-w-full flex flex-wrap h-auto rounded gap-3 items-end">
+       
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 justify-center">
+        {uniqueMiniFigs.map((fig) => (
     <div key={fig.set_num} className="flex flex-col h-full gap-3">
-    <Set setData = {fig} context={context}/>
+    <A_set setData = {fig} context={context} selectSet ={selectSet}/>
+    </div>
+    
+    ))}
+    </div>
+      </Tab>
+      <Tab
+      eventKey="sets"
+      title={<span className="rounded-t-lg bg-white border-4 border-yellow-500 px-4 py-2 shadow-md flex flex-col">Build Sets</span>}
+      className="bg-[#FFFACD p-4">
+        <h2 className="text-2xl font-bold text-blue-600 mb-4">🧱 Set Pool</h2>
+        <div className="flex justify-center mb-6">
+        
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-10 justify-center">
+        {uniqueSets.map((fig) => (
+    <div key={fig.set_num} className="flex flex-col h-full gap-3">
+    <A_set setData = {fig} context={context} selectSet ={selectSet}/>
     </div>
     ))}
-
-    {uniqueSets.map((fig) => (
-    <div key={fig.set_num} className="flex flex-col h-full gap-3">
-    <Set setData = {fig} context={context}/>
     </div>
-    ))}
+      </Tab>
+    </Tabs>
+
+
 
     
     

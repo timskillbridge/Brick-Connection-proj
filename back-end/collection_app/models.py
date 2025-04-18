@@ -22,7 +22,7 @@ class Set_Group(models.Model):
         self.save()
 
 class Single_Set(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     theme_id = models.PositiveIntegerField(blank = True, null = True)
     num_parts = models.PositiveIntegerField(blank = True, null = True)
     difficulty_url = models.CharField(max_length=255, null = True, blank = True)

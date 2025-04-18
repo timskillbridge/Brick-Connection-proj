@@ -77,6 +77,7 @@ export const api = axios.create({
   };
 
   export const confirmUser = async() => {
+
     let token = localStorage.getItem('token');
     if (token) {
       api.defaults.headers.common['Authorization'] = `token ${token}`

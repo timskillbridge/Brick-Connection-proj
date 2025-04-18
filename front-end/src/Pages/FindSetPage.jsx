@@ -33,6 +33,8 @@ const figsCall = async (term) => {
   }
 }
 
+
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       context.setCurrentError('');
@@ -57,8 +59,9 @@ const figsCall = async (term) => {
        
         <h2 className="text-3xl font-bold text-red-600 mb-4">🧍‍♂️ Search for LEGO Minifigs</h2>
         <div className="flex justify-center mb-6">
-        <form onSubmit={(event) => [event.preventDefault(), figsCall(fig)]}>
+        <form onSubmit={(event) => [event.preventDefault(), figsCall(fig), setFig("")]}>
         <input
+        value={fig}
         type="text"
         placeholder="Name, Job, color, etc..."
         className="w-full max-w-md px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700]"
