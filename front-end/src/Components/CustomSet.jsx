@@ -7,6 +7,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import { api } from '../Utility/user_utilities';
 import LoadingSpinner from './Loading_Spinner';
+import A_set from './A_set';
 
 
 export default function CustomSet({show, setShow, close, submit, formData, setFormData}) {
@@ -18,10 +19,6 @@ const [customName,setCustomName] = useState("")
 const [set_parts,setSet_parts] = useState(0)
 const [setNum,setSetNum] = useState("")
 const [validForm, setValidForm] = useState(false)
-
-// const handleCustomSubmit = () => {
-//     const validForm = preview !=='/assets/placeholder.png' && 
-// }
 
 const handleImageClick = () => {
     imageInputRef.current?.click();
@@ -109,6 +106,17 @@ return () => {
     ).join('');
   }
 
+const buildCustom = () => {
+    const newSet = {
+       'name': customName,
+       'num_parts': set_parts,
+       'set_img_url': preview,
+       'set_num':setNum,
+       'set_url': "Custom Build"
+    }
+    context.setManageMiniFigs(prevArray => [...prevArray,newSet])  
+}
+
 
 if(!show) return null;
 
@@ -154,7 +162,7 @@ if(!show) return null;
     className="border-2 border-black w-[95%]"
     value = {customName}
     onChange= {(e) => [setCustomName(e.target.value),
-         setSetNum(`fig-${randomAlphaNum()}${e.target.value}`)
+         setSetNum(`fig-${randomAlphaNum()}-${e.target.value}`)
         // console.log(setNum)
     ]
         }
@@ -184,6 +192,10 @@ if(!show) return null;
       <Button 
       variant="primary"
       className={`w-auto text-sm ${!validForm?'disabled':""}`}
+      onClick = {(() => {
+        [buildCustom(), setShow(false), cleanup()]
+        
+      })}
       >
 
     {`${validForm?'Add to your pool!':'Incomplete info'}`}

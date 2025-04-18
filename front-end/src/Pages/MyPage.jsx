@@ -207,7 +207,7 @@ const handleDoubleClick = async () => {
         // variant = 'primary'
         className="relative left-[15%] w-1xl bg-[#FFD700] text-black font-bold uppercase tracking-wider border-4 border-yellow-500 rounded-md px-6 py-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 pb-2 mb-2 "
         onClick = {() => {setIsOpen(true)}}
-        >+ Custom Set</button>
+        >+ Custom Minifig</button>
        
         <h2 className="text-3xl font-bold ">
         🧍‍♂️Minifig Pool
@@ -270,7 +270,7 @@ formData={formData}
 setFormData={setFormData}
 />
     
-    //show, close, submit, formData, setFormData
+
 </>
   )
 }

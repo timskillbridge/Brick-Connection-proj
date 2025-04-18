@@ -7,7 +7,7 @@ import { api } from '../Utility/user_utilities';
 const brick = import.meta.env.VITE_BRICKABLE;
 
 export default function A_set({setData, selectSet}) {
-    console.log(`set data ------- ${setData}`)
+    console.log(setData)
 /** @type {AppContextType} */
 const context = useOutletContext();
 const headers = {
