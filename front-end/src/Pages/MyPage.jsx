@@ -15,8 +15,9 @@ export default function MyPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [formData,setFormData] = useState({});
   const context = useOutletContext()
+  const [type,setType] = useState(true)
   const[selectSet, setSelectSet] = useState("");   //will create a container with press buttons for each set, selected group set will be what is added to when you add a set to a group.
-  let type = true
+  
   const headers = {
     Authorization: `key ${brick}`,
     // 'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ const uniqueMiniFigs = Array.from(
 const uniqueSets = Array.from(
   new Map(context.manageSets.map(fig => [fig.set_num, fig])).values()
 );
-console.log(uniqueSets)
+// console.log(uniqueSets)
 
 const handleSetGroupCreate = async (groupName) => {
 
@@ -74,13 +75,20 @@ const handleSetGroupCreate = async (groupName) => {
     context.setCurrentError("Name cannot be blank")
     return
   }
+
   // console.log(groupName)
   const {data} = await api.get("collection/set_groups/");
+  console.log(groupName)
+  if(data.set_groups.filter(item => item.set_name === groupName).length > 0) {
+    console.log(data.set_groups.filter(item => item.set_name === groupName))
+    context.setCurrentError("That name already exists, choose a unique name")
+    return
+  }
   // console.log(data)
   const setGroup = data['set_groups']
   // console.log(setGroup)
   const filtered = setGroup.filter((item) => groupName ==item.set_name)
-  console.log(`does not exist, creating |${filtered}|`)
+  // console.log(`does not exist, creating |${filtered}|`)
   if (filtered.length ==0) {
     
     await api.post('collection/set_groups/', {
@@ -93,14 +101,14 @@ const handleSetGroupCreate = async (groupName) => {
     const feedGroups = await api.get("collection/set_groups/")
     setSet_Groups(feedGroups.data.set_groups)
   } else {
-    console.log('exists')
+    // console.log('exists')
   }
 }
 
 const handleSelectGroup = (group) => {
 
   setSelectSet(group)
-  console.log(group)
+  // console.log(group)
 }
 
 const handleDoubleClick = async () => {
@@ -148,7 +156,7 @@ const handleDoubleClick = async () => {
       type="text"
       placeholder="What should it be called?"
       className="w-full px-4 py-2 rounded-md border-2 border-gray-300 shadow-inner focus:outline-none focus:ring-2 focus:ring-yellow-400 text-lg"
-      onChange={(e) => setGroupName(e.target.value.toLocaleLowerCase())}
+      onChange={(e) => setGroupName(e.target.value)}
     />
 
     <button
@@ -202,11 +210,13 @@ const handleDoubleClick = async () => {
     >
       <Tab eventKey="MiniFig"
       title={<span className="rounded-t-lg bg-white border-4 border-yellow-500 px-4 py-2 shadow-md flex flex-col p-0 m-0">Minifigs</span>}
-      className="bg-[#FFACD] p-4">
+      className="bg-[#FFACD] p-4"
+      onClick ={ () => {setType(true)}}
+      >
         <button 
         // variant = 'primary'
         className="relative left-[15%] w-1xl bg-[#FFD700] text-black font-bold uppercase tracking-wider border-4 border-yellow-500 rounded-md px-6 py-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 pb-2 mb-2 "
-        onClick = {() => {[type = true, setIsOpen(true)]}}
+        onClick = {() => {[setType(true), setIsOpen(true)]}}
         >+ Custom Minifig</button>
        
         <h2 className="text-3xl font-bold ">
@@ -239,7 +249,14 @@ const handleDoubleClick = async () => {
       <Tab
       eventKey="sets"
       title={<span className="rounded-t-lg bg-white border-4 border-yellow-500 px-4 py-2 shadow-md flex flex-col">Build Sets</span>}
-      className="bg-[#FFFACD p-4">
+      className="bg-[#FFFACD p-4"
+      onClick ={ () => {setType(false)}}
+      >
+         <button 
+        // variant = 'primary'
+        className="relative left-[15%] w-1xl bg-[#FFD700] text-black font-bold uppercase tracking-wider border-4 border-yellow-500 rounded-md px-6 py-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 pb-2 mb-2 "
+        onClick = {() => {[setType(false), setIsOpen(true)]}}
+        >+ Custom Set</button>
         <h2 className="text-2xl font-bold text-blue-600 mb-4">🧱 Set Pool</h2>
         <div className="text-[#DA291C] underline">
          {

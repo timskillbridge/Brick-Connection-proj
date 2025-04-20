@@ -50,8 +50,9 @@ const handleSubmit = async(passedSet) => {
             handleCustomDelete(passedSet)
           }
         //   alert(passedSet.set_num.slice(0,3))
-          const isFig = passedSet.set_num.slice(0,3)
+          const isFig = passedSet.set_num.slice(0,3) == 'fig'
           const updateer = isFig? context.setManageMiniFigs : context.setManageSets
+        //   alert(isFig)
           const pool = isFig? context.manageMiniFigs : context.manageSets;
 
           updateer(prevArray => {

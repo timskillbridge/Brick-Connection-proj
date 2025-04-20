@@ -4,6 +4,7 @@ from django.core import validators as v
 from user_app.models import App_User
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+
 import os
 # Create your models here.
 
@@ -13,9 +14,17 @@ class Collection(models.Model):
     App_user = models.OneToOneField(App_User, on_delete=models.CASCADE, related_name = 'collection', blank = True, null = True)
 
 class Set_Group(models.Model):
-    set_name = models.CharField(unique=True, max_length=100)
+    set_name = models.CharField(unique=False, max_length=100)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name = 'set_group')
     #blank = True, null = True
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields = [ 'collection', 'set_name'],
+                name = 'unique_group_per_collection'
+            )
+        ]
 
     def change_set_name(self, name):
         self.set_name = name
