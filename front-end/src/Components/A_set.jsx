@@ -7,6 +7,18 @@ import { api } from '../Utility/user_utilities';
 const brick = import.meta.env.VITE_BRICKABLE;
 
 export default function A_set({setData, selectSet}) {
+const isCustomSet = setData.set_img_url?.startsWith('/assets/');
+const handleCustomDelete = async (passedSet) => {
+    const fileName = passedSet.set_img_url?.split('/').pop()
+        await api.delete('collection/delete_temp_image/', {
+            data: {filename:fileName},
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+}
+
     console.log(setData)
 /** @type {AppContextType} */
 const context = useOutletContext();
@@ -17,28 +29,35 @@ const headers = {
 console.log(selectSet)
 const handleSubmit = async(passedSet) => {
     try {
+
+        
+        passedSet.custom = isCustomSet
+
+        const fileName = passedSet.set_img_url?.split('/').pop()
+
         api.post(`collection/set_groups/${selectSet.id}/single_sets/`, {
-            name : passedSet.name,
-            num_parts:passedSet.num_parts,
-            set_img_url:passedSet.set_img_url,
-            instructions:passedSet.set_url,
+            name: passedSet.name,
+            num_parts: passedSet.num_parts,
+            set_img_url: isCustomSet ? fileName : passedSet.set_img_url,
+            instructions: passedSet.set_url,
+            custom: isCustomSet            
         }, {
             headers: {
               'Content-Type': 'application/json'
             }
-          })
-          if(passedSet.set_num.slice(0,3) =='fig') {
-        context.setManageMiniFigs(prevArray => {
-            const index = prevArray.findIndex(item => item.set_num === setData.set_num);
-            if (index === -1) return prevArray;
-            return [...prevArray.slice(0,index), ...prevArray.slice(index+1)]
-          })} else {
-            context.setManageSets(prevArray => {
-                const index2 = prevArray.findIndex(item => item.set_num === setData.set_num);
-                if (index2 === -1) return prevArray;
-                return [...prevArray.slice(0,index2), ...prevArray.slice(index2+1)]
-              })
+          });
+          if (isCustomSet) {
+            handleCustomDelete(passedSet)
           }
+        //   alert(passedSet.set_num.slice(0,3))
+          const isFig = passedSet.set_num.slice(0,3)
+          const updateer = isFig? context.setManageMiniFigs : context.setManageSets
+          const pool = isFig? context.manageMiniFigs : context.manageSets;
+
+          updateer(prevArray => {
+            const index = prevArray.findIndex(item => item.set_num === passedSet.set_num);
+            return index === -1 ? prevArray : [...prevArray.slice(0, index), ...prevArray.slice(index + 1)];
+          });
     }
     catch (err) {
         console.log(err)
@@ -55,6 +74,9 @@ return (
         className="absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 text-white font-bold py-2 px-2 rounded shadow-md transition duration-300 "
         onClick = {() => {
             context.setManageMiniFigs(prevArray => prevArray.filter(item => item.set_num !==setData.set_num))
+            if (isCustomSet) {
+                handleCustomDelete(setData)
+              }
         }}
         >
              X 

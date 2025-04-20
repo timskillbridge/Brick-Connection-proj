@@ -10,7 +10,7 @@ import LoadingSpinner from './Loading_Spinner';
 import A_set from './A_set';
 
 
-export default function CustomSet({show, setShow, close, submit, formData, setFormData}) {
+export default function CustomSet({show, setShow, type, formData, setFormData}) {
 const context = useOutletContext()
 const [preview,setPreview] = useState('/assets/placeholder.png');
 const imageInputRef = useRef(null)
@@ -112,7 +112,8 @@ const buildCustom = () => {
        'num_parts': set_parts,
        'set_img_url': preview,
        'set_num':setNum,
-       'set_url': "Custom Build"
+       'set_url': "Custom Build",
+       'image_name':preview
     }
     context.setManageMiniFigs(prevArray => [...prevArray,newSet])  
 }
@@ -129,8 +130,10 @@ if(!show) return null;
  <Card style={{ width: '12rem' }} className="relative flex flex-col h-[22rem] border border-gray-300 rounded-lg shadow-sm bg-white  transition-transform duration-300">
         <button
         variant="danger"
-        className="absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 hover:scale-110 text-white font-bold py-2 z-10 px-3 rounded shadow-md transition duration-300 "
-        onClick={() => [setShow(false), cleanup()]}
+        className={
+            `${preview!=='/assets/placeholder.png'?'hidden':""} absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 hover:scale-110 text-white font-bold py-2 z-10 px-3 rounded shadow-md transition duration-300 `
+        }
+        onClick={() => [console.log(preview),cleanup(), setShow(false)]}
         >
              X 
              </button>

@@ -16,7 +16,7 @@ export default function MyPage() {
   const [formData,setFormData] = useState({});
   const context = useOutletContext()
   const[selectSet, setSelectSet] = useState("");   //will create a container with press buttons for each set, selected group set will be what is added to when you add a set to a group.
-  
+  let type = true
   const headers = {
     Authorization: `key ${brick}`,
     // 'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ const handleDoubleClick = async () => {
         <button 
         // variant = 'primary'
         className="relative left-[15%] w-1xl bg-[#FFD700] text-black font-bold uppercase tracking-wider border-4 border-yellow-500 rounded-md px-6 py-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 pb-2 mb-2 "
-        onClick = {() => {setIsOpen(true)}}
+        onClick = {() => {[type = true, setIsOpen(true)]}}
         >+ Custom Minifig</button>
        
         <h2 className="text-3xl font-bold ">
@@ -264,7 +264,7 @@ const handleDoubleClick = async () => {
 <CustomSet
 show={isOpen}
 setShow = {setIsOpen}
-close={() => setIsOpen(false)}
+type = {type}
 submit={handleCustom}
 formData={formData}
 setFormData={setFormData}

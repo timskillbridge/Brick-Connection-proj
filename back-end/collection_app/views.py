@@ -237,6 +237,23 @@ def fix_base64_padding(b64_string):
         b64_string += '=' * (4-missing_padding)
     return b64_string
 
+class DeleteTempImage(LoggedInView):
+    def delete(self, request):
+        filename = request.data.get('filename')
+        if not filename:
+            return Response({"error": f"No filename provided {settings.BASE_DIR}"}, status=400)
+        BASE_DIR = Path(__file__).resolve().parents[2]
+        file_path = BASE_DIR / 'front-end' / 'public' / 'assets' / 'images'
+        path = os.path.join(file_path, filename)
+        
+        # print(f"error path: {path}")
+        if os.path.exists(path):
+            os.remove(path)
+            return Response({"message": "File deleted"}, status=200)
+        # print(f"error path: {path}")
+        return Response({"error": "File not found"}, status=404)
+
+
 class ProcessJPEG(APIView):
     def post(self, request):
         image_data = request.data.get('image')
