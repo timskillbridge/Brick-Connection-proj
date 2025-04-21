@@ -6,7 +6,8 @@ HTTP_200_OK,\
 HTTP_201_CREATED,\
 HTTP_204_NO_CONTENT,\
 HTTP_400_BAD_REQUEST,\
-HTTP_401_UNAUTHORIZED
+HTTP_401_UNAUTHORIZED,\
+HTTP_226_IM_USED
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
@@ -30,6 +31,12 @@ class Register_New_User(APIView):
         data = request.data.copy()
         create_username = data.get('email')
         data['username'] = create_username[0:create_username.index('@')]
+        checkUser = len(App_User.objects.filter(username=data['username']))
+        print(checkUser)
+        if checkUser > 0:
+            return Response({'Username already exists, pick another'}, status=HTTP_226_IM_USED)
+
+
         try:
             new_user = App_User.objects.create_user(**data)
             token = Token.objects.create(user=new_user)

@@ -8,26 +8,40 @@ import Set from '../Components/Set'
 import { useOutletContext } from 'react-router-dom';
 
 export default function FindSet() {
-const [fig,setFig] = useState()
-const [buildset,setBuildset] = useState()
-const [figdata,setFigdata] = useState()
-const [builddata,setBuilddata] = useState()
-const [loading, setLoading] = useState()
+const [fig,setFig] = useState("")
+const [buildset,setBuildset] = useState("")
+const [figdata,setFigdata] = useState([])
+const [builddata,setBuilddata] = useState([])
+const [loading, setLoading] = useState(false)
 // const [prev, setPrev] = useState("")
 // const [next, setNext] = useState("")
 const context = useOutletContext();
 
-const figsCall = async (term) => {
+const figsCall = async (term, type) => {
+  setFigdata([])
+  setBuilddata([])
   setLoading(true)
   try {
-    const returnedFigs = await searchFigs(term);
-    if (returnedFigs.length == 0) {context.setCurrentError('Oops, looks like there were no results for that search')}
+    let returnedFigs
+    if (type == 'fig'){
+    returnedFigs = await searchFigs(term,'fig');
+} else {
+    returnedFigs = await searchFigs(term, 'set')
+}
+    if (returnedFigs.length == 0) {context.setCurrentError('Oops, looks like there were no results for that search')
+      return
+    }
     // if(returnedFigs.next) {setNext(returnedFigs.next)}
     // console.log(returnedFigs)
+    if (type == 'fig'){
     setFigdata(returnedFigs)
+  } else if(type=='set') {
+    setBuilddata(returnedFigs)
+  }
+  // console.log(builddata)
   }
   catch (error) {
-    console.err(error)
+    console.error(error)
   } finally {
     setLoading(false)
   }
@@ -59,7 +73,7 @@ const figsCall = async (term) => {
        
         <h2 className="text-3xl font-bold text-red-600 mb-4">🧍‍♂️ Search for LEGO Minifigs</h2>
         <div className="flex justify-center mb-6">
-        <form onSubmit={(event) => [event.preventDefault(), figsCall(fig), setFig("")]}>
+        <form onSubmit={(event) => [event.preventDefault(), figsCall(fig,'fig'), setFig("")]}>
         <input
         value={fig}
         type="text"
@@ -93,14 +107,31 @@ const figsCall = async (term) => {
       className="bg-[#FFFACD p-4">
         <h2 className="text-2xl font-bold text-blue-600 mb-4">🧱 Discover LEGO Sets</h2>
         <div className="flex justify-center mb-6">
-          <form onSubmit={(event) => [event.preventDefault()]}>
+        <form onSubmit={(event) => [event.preventDefault(), figsCall(buildset,'set'), setBuildset("")]}>
         <input
+        value = {buildset}
         type="text"
         placeholder="Search for a LEGO set..."
         className="w-full max-w-md px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
         onChange= {(e) => setBuildset(e.target.value)}
         />
         </form>
+        </div>
+        <div className="w-full min-w-full flex flex-wrap h-auto rounded gap-3 items-end">
+        <p style={{color: 'red'}}>{context.currentError}</p>
+        {loading? (
+        <LoadingSpinner />
+    )
+    : ""}
+    {
+    builddata? (
+      builddata.map((fig) => (
+      <div key={fig.set_num} className="flex flex-col h-full">
+      <Set setData = {fig} context={context}/>
+      </div>
+    ))
+) : ""
+    }
         </div>
       </Tab>
     </Tabs>

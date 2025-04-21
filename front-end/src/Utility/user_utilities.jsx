@@ -18,6 +18,9 @@ export const api = axios.create({
       email: username,
       password: password,
     });
+    if(response.status == 226) {setCurrentError('Username already exists, try another')
+      return 
+    }
     console.log(`${response.status} ${response['user']}`)
     if (response.status === 201) {
       const {user } = response.data

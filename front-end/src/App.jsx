@@ -12,6 +12,7 @@ export function App() {
   const [manageSets, setManageSets] = useState([]);
   const [userFigs, setUserFigs] = useState([]);
   const [userSets, setUserSets] = useState([]);
+  const [flicker, setFlicker] = useState(false)
   const location = useLocation()
   const context = useOutletContext()
 
@@ -56,7 +57,7 @@ export function App() {
     
     <NavBar user = {user} setUser={setUser} spr = {spr} setSpr = {setSpr}/>
     <div className="h-4 bg-[#DA291C]"></div>
-    <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr, manageMiniFigs, setManageMiniFigs, manageSets, setManageSets, userSets, setUserSets, userFigs, setUserFigs, isManaged, isManaged, isDupe}} />
+    <Outlet context={{user, setUser, currentError, setCurrentError, spr, setSpr, manageMiniFigs, setManageMiniFigs, manageSets, setManageSets, userSets, setUserSets, userFigs, setUserFigs, isManaged, isManaged, isDupe, flicker, setFlicker}} />
     </>
   )
 

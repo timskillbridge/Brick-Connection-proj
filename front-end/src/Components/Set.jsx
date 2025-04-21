@@ -23,7 +23,7 @@ const context = useOutletContext();
     <Card.Text className="text-sm overflow-hidden">
   <span className="block break-words">pieces: {setData.num_parts}</span>
   <span className="block break-words">set: {setData.set_num}</span>
-  <span className="block font-bold text-center">In Pool: {context.isManaged(setData)}</span>
+  {context.user?<span className="block font-bold text-center">In Pool: {context.isManaged(setData)}</span>:""}
 </Card.Text>
       {context.user?(
         <>
@@ -68,8 +68,9 @@ const context = useOutletContext();
 <Card.Text className="text-sm overflow-hidden">
   <span className="block break-words">pieces: {setData.num_parts}</span>
   <span className="block break-words">set: {setData.set_num}</span>
-  <span className="block font-bold text-center">In Pool: {context.isManaged(setData)}</span>
+  {context.user?<span className="block font-bold text-center">In Pool: {context.isManaged(setData)}</span>:""}
 </Card.Text>
+{context.user?(
 <div>
     <Button
     variant="primary"
@@ -92,7 +93,7 @@ const context = useOutletContext();
       }}>
         -
       </Button>
-    </div>
+    </div>):""}
   </Card.Body>
 </Card>)
 

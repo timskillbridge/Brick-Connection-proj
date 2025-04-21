@@ -6,7 +6,7 @@ import { useOutletContext } from 'react-router-dom';
 import { api } from '../Utility/user_utilities';
 const brick = import.meta.env.VITE_BRICKABLE;
 
-export default function A_set({setData, selectSet}) {
+export default function A_set({setData, selectSet, setSelectSet, setFlicker}) {
 const isCustomSet = setData.set_img_url?.startsWith('/assets/');
 const handleCustomDelete = async (passedSet) => {
     const fileName = passedSet.set_img_url?.split('/').pop()
@@ -19,14 +19,14 @@ const handleCustomDelete = async (passedSet) => {
 
 }
 
-    console.log(setData)
+    // console.log(setData)
 /** @type {AppContextType} */
 const context = useOutletContext();
 const headers = {
     Authorization: `key ${brick}`,
     'Content-Type': 'application/json',
   };
-console.log(selectSet)
+// console.log(selectSet)
 const handleSubmit = async(passedSet) => {
     try {
 
@@ -35,7 +35,7 @@ const handleSubmit = async(passedSet) => {
 
         const fileName = passedSet.set_img_url?.split('/').pop()
 
-        api.post(`collection/set_groups/${selectSet.id}/single_sets/`, {
+        await api.post(`collection/set_groups/${selectSet.id}/single_sets/`, {
             name: passedSet.name,
             num_parts: passedSet.num_parts,
             set_img_url: isCustomSet ? fileName : passedSet.set_img_url,
@@ -101,9 +101,14 @@ return (
       <Button 
       variant="primary"
       className="w-auto text-sm"
-      onClick = { () => {
-        handleSubmit(setData)
-      }}
+      onClick = { ( async() => {
+        const selected = selectSet
+        console.log(selected)
+        await handleSubmit(setData);
+        setFlicker(prev => !prev);
+        setSelectSet(selected)
+
+      })}
       >
         {`Add to ${selectSet.set_name}`}
         {/* {selectSet.set_name?`Add to ${selectSet.set_name}`:"Select a set"} */}
@@ -123,6 +128,7 @@ return (
         className="absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 text-white font-bold py-2 px-2 rounded shadow-md transition duration-300 "
         onClick = {() => {
             context.setManageSets(prevArray => prevArray.filter(item => item.set_num !==setData.set_num))
+            handleCustomDelete(setData)
         }}
         >
              X 
@@ -141,9 +147,11 @@ return (
       <Button 
       variant="primary"
       className="w-1/2 text-sm"
-      onClick = { () => {
-        handleSubmit(setData)
-      }}
+      onClick = { ( async() => {
+        await handleSubmit(setData);
+
+        setFlicker(prev => !prev);
+      })}
       >
         {`Add to ${selectSet.set_name}`}
         {/* {selectSet.set_name?`Add to ${selectSet.set_name}`:"Select a set"} */}

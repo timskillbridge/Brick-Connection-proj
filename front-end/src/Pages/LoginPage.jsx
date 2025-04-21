@@ -20,7 +20,7 @@ const navigate = useNavigate()
   
   return (
     <>
-    <div>Login</div>
+
     <Container className="d-flex justify-content-center " style={{ minHeight: '100vh' }}>
   <Row className="w-100">
     <Col xs={12} sm={10} md={6} lg={4} className="mx-auto">
@@ -71,7 +71,7 @@ const navigate = useNavigate()
               }
             }
           >
-            <FloatingLabel controlId="floatingRegistrationInput" label="Username" className="mb-3">
+            <FloatingLabel controlId="floatingRegistrationInput" label="E-mail" className="mb-3">
               <Form.Control type="username" placeholder="name@example.com" onChange={(e) => setUsername(e.target.value)}/>
             </FloatingLabel>
             <FloatingLabel controlId="floatingRegistrationPassword" label="Password">

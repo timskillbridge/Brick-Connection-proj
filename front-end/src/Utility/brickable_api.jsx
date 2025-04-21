@@ -7,16 +7,27 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-export const searchFigs = async(term) => {
+export const searchFigs = async(term, type) => {
   try {
-    const response = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/?search=${term}`,
+    let response
+    // alert(term)
+    if(type =='fig'){
+    response = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/?search=${term}`,
       {
       params: {
         page_size:100
       },
       headers
-    }
-    )
+    });
+  } else {
+    response = await axios.get(`https://rebrickable.com/api/v3/lego/sets/?search=${term}`,
+      {
+      params: {
+        page_size:100
+      },
+      headers
+    });
+  }
     const rawData= response.data.results
 
     const filteredResponse = rawData.filter(item => item.set_img_url != null);

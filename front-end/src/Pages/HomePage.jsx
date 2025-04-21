@@ -14,6 +14,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const context = useOutletContext();
 
+
   // const grabImage = async () => {
   //   // const data = await api.get()
   //   try {

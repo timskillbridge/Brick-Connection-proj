@@ -11,6 +11,7 @@ import A_set from './A_set';
 
 
 export default function CustomSet({show, setShow, type, formData, setFormData}) {
+
 // console.log(`${type}`)
 const context = useOutletContext()
 const [preview,setPreview] = useState('/assets/placeholder.png');
@@ -41,19 +42,19 @@ useEffect(() => {
     // console.log(checkIfTrue)
 },[preview, set_parts, setNum])
 
-//    useEffect(() => {
-//   if (formData.image instanceof File) {
-//     const reader = new FileReader();
-//     reader.onloadend = () => {
-//       setPreview(reader.result);
-//     };
-//     reader.readAsDataURL(formData.image);
-//   } else if (typeof formData.image === 'string') {
-//     setPreview(formData.image); // it's a URL or base64 string
-//   } else {
-//     setPreview('/assets/placeholder.png');
-//   }
-// }, [formData.image]);
+   useEffect(() => {
+  if (formData.image instanceof File) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result);
+    };
+    reader.readAsDataURL(formData.image);
+  } else if (typeof formData.image === 'string') {
+    setPreview(formData.image); // it's a URL or base64 string
+  } else {
+    setPreview('/assets/placeholder.png');
+  }
+}, [formData.image]);
 
 const cleanup = () => {
     setPreview('/assets/placeholder.png')
@@ -66,7 +67,44 @@ const cleanup = () => {
 }
 
     const handleChange = async (e) => {
+      // console.log(preview)
+      if(preview != '/assets/placeholder.png' && preview != '/assets/setplaceholder.png') {
+        console.log('image not default, deleting prior uploaded image and resetting default')
+        const fileName = preview.split('/').pop()
+            await api.delete('collection/delete_temp_image/', {
+                data: {filename:fileName},
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+        const typecheck = type + " "
+        // console.log(typecheck)
+        typecheck.trim()
+        if(typecheck == 'true') {
+          type = false
+          type = true
+        } else {
+          type = true
+          type = false
+        }
+        // console.log(preview)
+      }
+  //     if (preview != '/assets/placeholder.png' && preview != '/assets/setplaceholder.png') {
+  //       const fileName = preview.split('/').pop()
+  //           await api.delete('collection/delete_temp_image/', {
+  //               data: {filename:fileName},
+  //               headers: {
+  //                   'Content-Type': 'application/json'
+  //               }
+  //           })
+  //           type = type+"-"
+  //           type = type.slice(0,4)
+  //           console.log(type)
+  //           ;
+  // }
+
         const file = e.target.files[0];
+        
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -76,6 +114,7 @@ const cleanup = () => {
             };
             reader.readAsDataURL(file)
     };
+    
 };
 
     const processImage = async(base64Image) => {
@@ -87,7 +126,7 @@ const cleanup = () => {
             const response = await api.post('collection/process_image/', body);
             setLoading(false)
             const imageUrl = response.data.path;
-            console.log(imageUrl)
+            // console.log(imageUrl)
             
             setFormData(prevState => ({
                 ...prevState,
@@ -118,7 +157,7 @@ const cleanup = () => {
 const buildCustom = () => {
     const newSet = {
        'name': customName,
-       'num_parts': set_parts,
+       'num_parts': parseInt(set_parts),
        'set_img_url': preview,
        'set_num':setNum,
        'set_url': "Custom Build",
@@ -147,7 +186,7 @@ if(!show) return null;
         className={
             `${preview!=='/assets/placeholder.png'?'hidden':""} absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 hover:scale-110 text-white font-bold py-2 z-10 px-3 rounded shadow-md transition duration-300 `
         }
-        onClick={() => [console.log(preview),cleanup(), setShow(false)]}
+        onClick={() => [/*console.log(preview),cleanup(),*/ setShow(false)]}
         >
              X 
              </button>
@@ -231,7 +270,7 @@ if(!show) return null;
        className={
            `${preview!=='/assets/setplaceholder.png'?'hidden':""} absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700 hover:scale-110 text-white font-bold py-2 z-10 px-3 rounded shadow-md transition duration-300 `
        }
-       onClick={() => [console.log(preview),cleanup(), setShow(false)]}
+       onClick={() => [/*console.log(preview),cleanup(),*/ setShow(false)]}
        >
             X 
             </button>

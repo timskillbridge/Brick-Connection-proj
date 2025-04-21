@@ -16,7 +16,8 @@ export default function MyPage() {
   const [formData,setFormData] = useState({});
   const context = useOutletContext()
   const [type,setType] = useState(true)
-  const[selectSet, setSelectSet] = useState("");   //will create a container with press buttons for each set, selected group set will be what is added to when you add a set to a group.
+  const flicker = context.flicker
+  const[selectSet, setSelectSet] = useState([]);
   
   const headers = {
     Authorization: `key ${brick}`,
@@ -24,7 +25,7 @@ export default function MyPage() {
   };
 
   const handleCustom = async() => {
-    console.log(`submitting :`, formData);
+    // console.log(`submitting :`, formData);
     const main = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       main.append(key,value);
@@ -41,21 +42,31 @@ export default function MyPage() {
    }
   }
 
+  const grabSets = async () => {
+    try {
+      const response = await api.get("collection/set_groups/");
+      setSet_Groups(response.data.set_groups);
+    } catch (error) {
+      console.error("Error fetching set groups:", error);
+    }
+  };
 
 const navigate = useNavigate()
 
-  useEffect(() => {
-    const grabSets = async () => {
-      try {
-        const response = await api.get("collection/set_groups/");
-        setSet_Groups(response.data.set_groups); // assuming the response has this structure
-      } catch (error) {
-        console.error("Error fetching set groups:", error);
-      }
-    };
+  // useEffect(() => {
+  //   grabSets()
   
-    grabSets();
-  }, []);
+    
+  // }, []);
+
+// useEffect(() => {
+//   grabSets()
+// },[context.flicker])
+
+useEffect(() => {
+grabSets()
+
+},[flicker])
 
 
 /** @type {AppContextType} */
@@ -78,9 +89,9 @@ const handleSetGroupCreate = async (groupName) => {
 
   // console.log(groupName)
   const {data} = await api.get("collection/set_groups/");
-  console.log(groupName)
+  // console.log(groupName)
   if(data.set_groups.filter(item => item.set_name === groupName).length > 0) {
-    console.log(data.set_groups.filter(item => item.set_name === groupName))
+    // console.log(data.set_groups.filter(item => item.set_name === groupName))
     context.setCurrentError("That name already exists, choose a unique name")
     return
   }
@@ -108,6 +119,7 @@ const handleSetGroupCreate = async (groupName) => {
 const handleSelectGroup = (group) => {
 
   setSelectSet(group)
+  
   // console.log(group)
 }
 
@@ -131,13 +143,14 @@ const handleDoubleClick = async () => {
   return (
     
 <>
-
+<div>{context.flicker}
+</div>
 
 <div className="min-h-1/4 bg-[#FFE400] py-10 px-4 flex flex-col items-center mt-0 pt-0 mb-0 pb-2">
   
   {/* Header */}
   <h2 className="text-4xl font-extrabold text-[#DA291C] mb-6 drop-shadow-lg">
-    Create a Set Group
+    Create a Collection
   </h2>
 
   {/* Form to Create Group */}
@@ -175,24 +188,26 @@ const handleDoubleClick = async () => {
   <div className="w-full max-w-5xl mt-0 pt-0">
     <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
       {set_Groups.length == 0? (
-        'Create some groups to get started'
+        'Create some collections to get started'
       ):""}
     </h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 justify-center">
       {set_Groups.map((group) => (
         <button
           key={group.id}
-          onClick={() => handleSelectGroup(group)}
-          onDoubleClick={() => {
-            handleDoubleClick()
+          onClick={
+            (() => {handleSelectGroup(group)
+            })}
+          onDoubleClick={async () => {
+            await handleDoubleClick()
           }}
           className={`px-4 py-2 rounded-md shadow-md font-semibold transition-all duration-200
-            ${selectSet === group
+            ${selectSet.id == group.id
               ? 'bg-red-600 text-white scale-95'
               : 'bg-white hover:bg-yellow-400 text-gray-900'
             }`}
         >
-          {group.set_name}
+          {`${group.set_name}: ${group.single_set.length} items`}
         </button>
       ))}
     </div>
@@ -240,7 +255,7 @@ const handleDoubleClick = async () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 justify-center">
         {uniqueMiniFigs.map((fig) => (
     <div key={fig.set_num} className="flex flex-col h-full gap-3">
-    <A_set setData = {fig} context={context} selectSet ={selectSet}/>
+    <A_set setData = {fig} context={context} selectSet ={selectSet} setSelectSet = {setSelectSet} setFlicker = {context.setFlicker}/>
     </div>
     
     ))}
@@ -270,7 +285,7 @@ const handleDoubleClick = async () => {
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-10 justify-center">
         {uniqueSets.map((fig) => (
     <div key={fig.set_num} className="flex flex-col h-full gap-3">
-    <A_set setData = {fig} context={context} selectSet ={selectSet}/>
+    <A_set setData = {fig} context={context} selectSet ={selectSet} setSelectSet = {setSelectSet} setFlicker = {context.setFlicker}/>
     </div>
     ))}
     </div>

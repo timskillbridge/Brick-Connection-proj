@@ -43,12 +43,14 @@ const NavBar = ({ user, setUser, spr, setSpr }) => {
   {/* Bottom row: Main Nav */}
   <Container fluid className="w-full flex justify-between items-center">
     <div className="flex gap-4 text-shadow-lg text-3xl">
-      <Nav.Link as={Link} to="/">Home</Nav.Link>
-      <Nav.Link as={Link} to="/AboutPage/">About</Nav.Link>
-      <Nav.Link as={Link} to="/FindSetPage/">Find a Set</Nav.Link>
+      <Nav.Link as={Link} to="/">| Home |</Nav.Link>
+      <Nav.Link as={Link} to="/FindSetPage/"> Find a Set |</Nav.Link>
 
       {user && (
-        <Nav.Link as={Link} to="/MyPage/">My Pool</Nav.Link>
+        <Nav.Link as={Link} to="/MyPage/"> My Pool |</Nav.Link>
+      )}
+      {user && (
+        <Nav.Link as={Link} to="/MyCollection/"> My Bricks |</Nav.Link>
       )}
     </div>
 
