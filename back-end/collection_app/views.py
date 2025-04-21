@@ -250,6 +250,43 @@ class Single_Sets(LoggedInView):
             status=HTTP_201_CREATED
             )
         return Response(serialized_single_set.errors, status=HTTP_400_BAD_REQUEST)
+    
+class A_Single_Set(LoggedInView):
+
+    def get(self, request, set_groups, sets):
+
+        # set = Set_Group.objects.get(id=set_group, collection = collection_id)
+        try:
+            set = get_object_or_404(Single_Set, set_group = set_groups, id = sets)
+        except:
+            return Response('Invalid set or the specified set belongs to another user', status=HTTP_400_BAD_REQUEST)
+        if set:
+            return Response(
+                Single_SetSerializer(set).data, status= HTTP_200_OK
+            )
+        return Response('Invalid group or group belongs to another user', status=HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request, set_groups, sets):
+        try:
+            collection = Collection.objects.get(App_user = request.user)
+
+            set = get_object_or_404(Single_Set, set_group = set_groups, id = sets)
+            
+            if collection.total_pieces - set.num_parts < 0:
+                collection.total_pieces = 0
+            else:
+                collection.total_pieces -= set.num_parts
+            if collection.num_of_sets - 1 < 0:
+                collection.num_of_sets = 0
+            else:
+                collection.num_of_sets -= 1
+            collection.save()
+        
+        except Exception as e:
+            return Response(str(e), status=HTTP_400_BAD_REQUEST)
+        set.delete()
+        return Response('Deleted',status=HTTP_204_NO_CONTENT)
 
 # def fix_base64_padding(b64_string):
 #     missing_padding = len(b64_string) % 4

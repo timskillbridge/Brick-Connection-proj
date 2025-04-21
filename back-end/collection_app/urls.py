@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Whole_Collection, Set_Groups, A_Set_Group, Single_Sets, ProcessJPEG, Custom_Set, Official_Sets, All_User_Sets, DeleteTempImage
+from .views import Whole_Collection, Set_Groups, A_Set_Group, Single_Sets, ProcessJPEG, Custom_Set, Official_Sets, All_User_Sets, DeleteTempImage, A_Single_Set
 
 # from api/v1/collection/
 urlpatterns = [
@@ -7,6 +7,7 @@ urlpatterns = [
     path('set_groups/', Set_Groups.as_view(), name='set-groups'),
     path('set_groups/<int:set_groups>/',A_Set_Group.as_view(), name='set-group' ),
     path('set_groups/<int:set_groups>/single_sets/', Single_Sets.as_view(), name = 'single-sets'),
+    path('set_groups/<int:set_groups>/single_sets/<int:sets>/', A_Single_Set.as_view(), name='a-single-set'),
     path('process_image/', ProcessJPEG.as_view(), name='process-image'),
     path('custom_sets/', Custom_Set.as_view(), name='custom-sets'),
     path('official-sets/', Official_Sets.as_view(), name='official-sets'),
