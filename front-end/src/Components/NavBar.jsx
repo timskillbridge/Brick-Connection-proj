@@ -27,8 +27,10 @@ const NavBar = ({ user, setUser, spr, setSpr }) => {
 
   return (
     <>
-<Navbar expand="md" className="bg-[#FFD700] text-gray-900 flex flex-col px-4 py-2">
-  {/* Top row: Signed in message */}
+<Navbar expand="md" className="relative bg-[#FFD700] text-gray-[#FFD700] flex flex-col px-4 py-2">
+<span className="absolute top-0 left-1/2 -translate-x-1/2 transform font-extrabold text-5xl text-[#FFD700] bg-[#DA291C] px-6 py-2 rounded-md shadow-lg border-[6px] border-yellow-300 outline-4 outline-black lego-font tracking-wide">
+  Brick-Connection
+</span>
   <div className="w-full flex justify-end items-center mb-2">
     {user? (
       <span className="text-md font-medium">

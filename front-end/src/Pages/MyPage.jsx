@@ -143,9 +143,6 @@ const handleDoubleClick = async () => {
   return (
     
 <>
-<div>{context.flicker}
-</div>
-
 <div className="min-h-1/4 bg-[#FFE400] py-10 px-4 flex flex-col items-center mt-0 pt-0 mb-0 pb-2">
   
   {/* Header */}
@@ -237,13 +234,20 @@ const handleDoubleClick = async () => {
         <h2 className="text-3xl font-bold ">
         🧍‍♂️Minifig Pool
         </h2>
-        <div className="text-[#DA291C] underline">
+        <span>
          {
          uniqueMiniFigs.length == 0? 
-         (<Nav.Link as={Link} to="/FindSetPage/">None in your pool, go find some!</Nav.Link>):""
+         (<Nav.Link as={Link}
+         to="/FindSetPage/"
+         className="text-[#DA291C] underline w-[25%]"
+         >
+          
+          None in your pool, go find some!
+          
+          </Nav.Link>):""
          }
         
-         </div>
+        </span>
 
         <div className="flex justify-center mb-6">
        {context.figData}
@@ -274,9 +278,17 @@ const handleDoubleClick = async () => {
         >+ Custom Set</button>
         <h2 className="text-2xl font-bold text-blue-600 mb-4">🧱 Set Pool</h2>
         <div className="text-[#DA291C] underline">
-         {
-         uniqueSets.length == 0? 
-         (<Nav.Link as={Link} to="/FindSetPage/">None in your pool, go find some!</Nav.Link>):""
+ 
+        {
+         uniqueMiniFigs.length == 0? 
+         (<Nav.Link as={Link}
+         to="/FindSetPage/"
+         className="text-[#DA291C] underline w-[25%]"
+         >
+          
+          None in your pool, go find some!
+          
+          </Nav.Link>):""
          }
         
          </div>

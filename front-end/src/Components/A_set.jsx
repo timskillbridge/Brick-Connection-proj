@@ -9,6 +9,8 @@ const brick = import.meta.env.VITE_BRICKABLE;
 export default function A_set({setData, selectSet, setSelectSet, setFlicker}) {
 const isCustomSet = setData.set_img_url?.startsWith('/assets/');
 const handleCustomDelete = async (passedSet) => {
+  // console.log(passedSet)
+  if(passedSet.set_url == "Custom Build"){
     const fileName = passedSet.set_img_url?.split('/').pop()
         await api.delete('collection/delete_temp_image/', {
             data: {filename:fileName},
@@ -16,7 +18,7 @@ const handleCustomDelete = async (passedSet) => {
                 'Content-Type': 'application/json'
             }
         });
-
+}
 }
 
     // console.log(setData)
@@ -103,7 +105,7 @@ return (
       className="w-auto text-sm"
       onClick = { ( async() => {
         const selected = selectSet
-        console.log(selected)
+        // console.log(selected)
         await handleSubmit(setData);
         setFlicker(prev => !prev);
         setSelectSet(selected)

@@ -80,12 +80,12 @@ export default function HomePage() {
   //     console.error("failed to grab figs", error);
   //   }
   // };
-  const setImgs = async () => {
-    const imgs = await grabImage()
-    // console.log(imgs)
-    setMini(imgs[0])
-    setSets(imgs[1])
-  }
+  // const setImgs = async () => {
+  //   const imgs = await grabImage()
+  //   // console.log(imgs)
+  //   setMini(imgs[0])
+  //   setSets(imgs[1])
+  // }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +105,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-console.log(mini)
+// console.log(mini)
   },[mini])
 
   return (

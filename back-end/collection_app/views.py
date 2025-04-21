@@ -162,6 +162,23 @@ class A_Set_Group(LoggedInView):
 
     def delete(self, request, set_groups):
         collection_id = Collection.objects.get(App_user = request.user).id
+        collection = Collection.objects.get(App_user = request.user)
+        piece_total = 0
+        num_sets = 0
+        group = get_object_or_404(Set_Group, collection =collection, id=set_groups)
+        for single_Set in group.single_set.all():
+            print(single_Set)
+            piece_total += single_Set.num_parts
+            num_sets += 1
+        if collection.total_pieces - piece_total < 0:
+            collection.total_pieces = 0
+        else:
+            collection.total_pieces -= piece_total
+        if collection.num_of_sets - num_sets < 0:
+            collection.num_of_sets = 0
+        else:
+            collection.num_of_sets -= num_sets
+        collection.save()
         # set = Set_Group.objects.get(id=set_group, collection = collection_id)
         try:
             a_set_group = get_object_or_404(request.user.collection.set_group, id = set_groups, collection=collection_id)
@@ -224,6 +241,9 @@ class Single_Sets(LoggedInView):
         if serialized_single_set.is_valid():
             instance = serialized_single_set.save()
             instance.refresh_from_db()
+            collection.total_pieces += int(data['num_parts'])
+            collection.num_of_sets +=1
+            collection.save()
             return Response({
                 'single_set':Single_SetSerializer(instance).data
             },
@@ -231,11 +251,11 @@ class Single_Sets(LoggedInView):
             )
         return Response(serialized_single_set.errors, status=HTTP_400_BAD_REQUEST)
 
-def fix_base64_padding(b64_string):
-    missing_padding = len(b64_string) % 4
-    if missing_padding:
-        b64_string += '=' * (4-missing_padding)
-    return b64_string
+# def fix_base64_padding(b64_string):
+#     missing_padding = len(b64_string) % 4
+#     if missing_padding:
+#         b64_string += '=' * (4-missing_padding)
+#     return b64_string
 
 class DeleteTempImage(LoggedInView):
     def delete(self, request):
