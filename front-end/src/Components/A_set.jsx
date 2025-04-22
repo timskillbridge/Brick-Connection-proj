@@ -30,19 +30,30 @@ const headers = {
   };
 // console.log(selectSet)
 const handleSubmit = async(passedSet) => {
+  // console.log(passedSet)
     try {
-
-        
         passedSet.custom = isCustomSet
 
         const fileName = passedSet.set_img_url?.split('/').pop()
-
+        // console.log(fileName)
+        // console.log(passedSet)
+        // console.log(
+        //   `name: ${passedSet.name} \n
+        //   num_parts: ${passedSet.num_parts}\n
+        //   set_num: ${passedSet.set_num}\n
+        //   set_img_url: ${passedSet.set_img_url}\n
+        //   instructions: ${passedSet.instructions}\n
+        //   custom: ${passedSet.custom}\n
+        //   image: ${passedSet.image}`
+        // )
         await api.post(`collection/set_groups/${selectSet.id}/single_sets/`, {
             name: passedSet.name,
             num_parts: passedSet.num_parts,
+            set_num:passedSet.set_num,
             set_img_url: isCustomSet ? fileName : passedSet.set_img_url,
             instructions: passedSet.set_url,
-            custom: isCustomSet            
+            custom: isCustomSet,
+            image:passedSet.image_media_url            
         }, {
             headers: {
               'Content-Type': 'application/json'
@@ -109,6 +120,7 @@ return (
         await handleSubmit(setData);
         setFlicker(prev => !prev);
         setSelectSet(selected)
+        // console.log(setData)
 
       })}
       >

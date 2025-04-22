@@ -7,7 +7,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import { api } from '../Utility/user_utilities';
 import LoadingSpinner from './Loading_Spinner';
-import A_set from './A_set';
+
 
 
 export default function CustomSet({show, setShow, type, formData, setFormData}) {
@@ -21,6 +21,7 @@ const [customName,setCustomName] = useState("")
 const [set_parts,setSet_parts] = useState(0)
 const [setNum,setSetNum] = useState("default")
 const [validForm, setValidForm] = useState(false)
+
 
 const handleImageClick = () => {
     imageInputRef.current?.click();
@@ -50,7 +51,7 @@ useEffect(() => {
     };
     reader.readAsDataURL(formData.image);
   } else if (typeof formData.image === 'string') {
-    setPreview(formData.image); // it's a URL or base64 string
+    setPreview(formData.image);
   } else {
     setPreview('/assets/placeholder.png');
   }
@@ -139,6 +140,9 @@ const cleanup = () => {
         }
     };
 
+
+
+
 // useEffect(() => {
 // return () => {
 //     if(preview && preview !=='/assets/placeholder.png') {
@@ -161,7 +165,8 @@ const buildCustom = () => {
        'set_img_url': preview,
        'set_num':setNum,
        'set_url': "Custom Build",
-       'image_name':preview
+       'image_name':preview,
+      //  'image': file
     }
     if (type){
     context.setManageMiniFigs(prevArray => [...prevArray,newSet])  
@@ -196,6 +201,7 @@ if(!show) return null;
     variant="top" src={preview}
     className="w-full h-40 object-contain hover:cursor-pointer"
     onClick={handleImageClick}
+    
     />
     <div className="absolute top-2 right-1/2 flex items-center justify-center">
     {loading?<LoadingSpinner/>:""}

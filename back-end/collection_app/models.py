@@ -31,15 +31,17 @@ class Set_Group(models.Model):
         self.save()
 
 class Single_Set(models.Model):
-    name = models.CharField(max_length=100)
-    theme_id = models.PositiveIntegerField(blank = True, null = True)
+    name = models.CharField(max_length=255)
+    theme_id = models.CharField(blank = True, null = True)
     num_parts = models.PositiveIntegerField(blank = True, null = True)
+    set_num = models.CharField(blank=True, null=True)
     difficulty_url = models.CharField(max_length=255, null = True, blank = True)
     set_img_url = models.CharField(max_length=255, null = True, blank = True)
     instructions = models.CharField(null =True, blank=True)
     custom = models.BooleanField(default=False)
     set_group = models.ForeignKey(Set_Group, on_delete=models.CASCADE, related_name='single_set', blank=True, null=True)
     image = models.ImageField(upload_to='user/custom_sets', null =True, blank=True)
+
 
 
 

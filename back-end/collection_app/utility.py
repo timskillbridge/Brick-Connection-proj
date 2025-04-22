@@ -3,6 +3,7 @@ from requests_oauthlib import OAuth1
 from dotenv import dotenv_values
 from os import getenv, environ
 from dotenv import load_dotenv
+import random
 
 if 'NOUN_K' not in environ or 'NOUN_S' not in environ:
     load_dotenv()
@@ -32,14 +33,34 @@ def get_icon(passedNum):
 
     endpoint = f"https://api.thenounproject.com/v2/icon?query={term}&limit=1&thumbnail_size=84"
     response = requests.get(endpoint, auth=auth)
+    match term:
+        case "infintile":
+            term= "Infantile"
+        case "toddler":
+            term= 'Toddler-esque'
+        case "crawl":
+            term= 'Simple'
+        case "lego":
+            term= 'Beginner'
+        case "system":
+            term= 'Moderate'
+        case "gears":
+            term= 'Clockwork'
+        case "flowchart":
+            term= 'Complicated'
+        case "complexity":
+            term= 'labyrrinthine'
+        case "science":
+            term= 'Frustration'
+
     if response.status_code == 200:
         responseJSON = response.json()
         icons = responseJSON.get('icons', [])
         if icons:
-            answer = icons[0].get('thumbnail_url')
+            answer = {
+            'url': icons[0].get('thumbnail_url'),
+            'alt':term
+            }
             if answer is not None:
                 return answer
     return None
-
-# print((f"{getenv('NOUN_K')}",f"{getenv('NOUN_S')}"))
-print(get_icon(100))

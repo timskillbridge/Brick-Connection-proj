@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files import File
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -234,16 +235,30 @@ class Single_Sets(LoggedInView):
         if data['num_parts']:
             complexity = int(data['num_parts'])
             try:
-                data['difficulty_url'] = get_icon(complexity)
+                icon_data = get_icon(complexity)
+                if icon_data:
+                    url = icon_data['url']
+                    alt = icon_data['alt']
+                    data['difficulty_url'] = url
+                    data['theme_id'] = alt
             except:
                 pass
         serialized_single_set = Single_SetSerializer(data = data)
         if serialized_single_set.is_valid():
             instance = serialized_single_set.save()
             instance.refresh_from_db()
+
+            file_name = data.get('set_img_url')
+            if file_name:
+                react_image_path = Path(__file__).resolve().parents[2]/ 'front-end' / 'public' / 'assets' / 'images' / file_name
+                if react_image_path.exists():
+                    with open(react_image_path, 'rb') as f:
+                        instance.image.save(file_name, File(f), save=True)
+
             collection.total_pieces += int(data['num_parts'])
             collection.num_of_sets +=1
             collection.save()
+
             return Response({
                 'single_set':Single_SetSerializer(instance).data
             },
@@ -340,7 +355,8 @@ class ProcessJPEG(APIView):
             return Response({
                 'error':str(e)
             }, status = HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
+
 '''
 -----------------------------------------
 |           GET ALL             |
