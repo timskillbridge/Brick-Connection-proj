@@ -4,7 +4,7 @@ import { useOutletContext } from 'react-router-dom'
 import { api } from '../Utility/user_utilities'
 
 
-export default function DisplaySet({group, setSelectedGroup, setFlicker, setSet_Groups}) {
+export default function DisplaySet({group, setSelectedGroup, setFlicker, setSet_Groups, grabCollection}) {
 const [manage, setManage] = useState(false)
 const [type,setType] = useState(false)
 // console.log(group)
@@ -64,7 +64,7 @@ const handleDeleteSet = async() => {
       className="absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700h hover:scale-110 text-white font-bold py-2 px-2 rounded shadow-md transition duration-300"
       onClick={() => {
         handleDeleteSet();
-        grabCollection();
+        // grabCollection();
       }}
 
 
@@ -103,12 +103,12 @@ const handleDeleteSet = async() => {
     {/* Instructions Link */}
     {!group.custom && (
       <a
-        href={group.instructions}
+        href={group.instructions+"/#parts"}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-2 bg-[#DA291C] !text-[#FFD700] px-4 py-2 rounded-md font-bold text-center shadow-md hover:scale-105 transition"
       >
-        📘 View Instructions
+        📘 Find parts, instructions, etc...
       </a>
     )}
   </div>

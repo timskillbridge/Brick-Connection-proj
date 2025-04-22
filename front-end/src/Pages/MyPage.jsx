@@ -280,7 +280,7 @@ const handleDoubleClick = async () => {
         <div className="text-[#DA291C] underline">
  
         {
-         uniqueMiniFigs.length == 0? 
+         uniqueSets.length == 0? 
          (<Nav.Link as={Link}
          to="/FindSetPage/"
          className="text-[#DA291C] underline w-[25%]"
