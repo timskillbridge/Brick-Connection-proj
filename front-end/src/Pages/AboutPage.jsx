@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { api } from '../Utility/user_utilities';
+import Loading_Spinner from'../Components/Loading_Spinner'
 
 import DisplaySet from '../Components/DisplaySet';
 
@@ -10,6 +11,7 @@ const [set_Groups, setSet_Groups] = useState([]);
 const [selectedGroup, setSelectedGroup] = useState([]);
 const [collectionDetails,setCollectionDetails] = useState({});
 const [currentGroup, setCurrentGroup] = useState([]);
+const [loading, setLoading] = useState(false);
 const [figs, setFigs] = useState([]);
 const [sets, setSets] = useState([]);
 const flicker = context.flicker
@@ -94,13 +96,14 @@ grabSets()
 <>
 <div className="min-h-screen bg-[#FFE400] py-10 px-4 flex flex-col items-center mt-0 pt-0 mb-0 pb-2">
 
+
   <h2 className="text-4xl font-extrabold text-[#DA291C] mb-6 drop-shadow-lg">
     {`My collection: ${collectionDetails.sets} ${collectionDetails.sets>1?'sets':'set'}, ${collectionDetails.pieces} pieces`}
   </h2>
 
   <div className="relative w-screen h-14 pb-0 pt-0 mb-0 mt-0">
   <p  className={`absolute top-0 left-1/2 -translate-x-1/2 text-center text-[#DA291C] px-4 py-1 
-    // ${context.currentError ? 'border-2 border-amber-500' : ''}`}>{context.currentError}</p>
+    ${context.currentError ? 'border-2 border-amber-500' : ''}`}>{context.currentError}</p>
   </div>
 
   <div className="w-full max-w-5xl mt-0 pt-0">

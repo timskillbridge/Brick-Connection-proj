@@ -6,10 +6,12 @@ import { Nav, Button, Dropdown } from "react-bootstrap";
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { api } from "../Utility/user_utilities";
 
 
 
 const NavBar = ({ user, setUser, spr, setSpr }) => {
+  
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -73,9 +75,25 @@ const NavBar = ({ user, setUser, spr, setSpr }) => {
               Manage Users
             </Dropdown.Item>
           )}
+          <Dropdown.Item onClick={ async() => {
+            const grab_new = prompt('Input your new password','password')
+            // alert(grab_new)
+            if (grab_new != null) {
+            await api.put('user/',
+              {
+                'password': grab_new,
+              })
+            alert("Your password has been changed")
+            }
+            else{alert('Change of password cancelled')}
+          }
+          
+            
+          }><Button variant="outline-primary">Change Password</Button></Dropdown.Item>
           <Dropdown.Item onClick={handleLogout}><Button variant="outline-danger" onClick={handleLogout}>
                 {`Log Out\n${user}`}
               </Button></Dropdown.Item>
+
         </Dropdown.Menu>
       </Dropdown>
     )}
