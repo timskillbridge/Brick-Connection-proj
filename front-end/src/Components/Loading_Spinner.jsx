@@ -1,7 +1,7 @@
 
 import React from 'react'
 export default function LoadingSpinner() {
-  const imagePool = import.meta.glob('/src/assets/game_assets/*.png',{eager:true});
+  const imagePool = import.meta.glob('/src/game_assets/*.png',{eager:true});
 
   const getRandBrick = () => {
     const imagePaths = Object.values(imagePool);
