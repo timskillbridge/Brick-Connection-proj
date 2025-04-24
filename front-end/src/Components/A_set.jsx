@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, {useState} from 'react'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useOutletContext } from 'react-router-dom';
@@ -8,6 +8,8 @@ const brick = import.meta.env.VITE_BRICKABLE;
 
 export default function A_set({setData, selectSet, setSelectSet, setFlicker}) {
 const isCustomSet = setData.set_img_url?.startsWith('/assets/');
+const [posting, setPosting] = useState(false)
+
 const handleCustomDelete = async (passedSet) => {
   // console.log(passedSet)
   if(passedSet.set_url == "Custom Build"){
@@ -29,7 +31,10 @@ const headers = {
     'Content-Type': 'application/json',
   };
 // console.log(selectSet)
+
 const handleSubmit = async(passedSet) => {
+  if (posting) return
+  setPosting(true)
   // console.log(passedSet)
     try {
         passedSet.custom = isCustomSet
@@ -76,6 +81,9 @@ const handleSubmit = async(passedSet) => {
     catch (err) {
         console.log(err)
     }
+    finally{
+      setPosting(false)
+    }
 }
 
 return (
@@ -113,7 +121,7 @@ return (
      {selectSet?.set_name? (
       <Button 
       variant="primary"
-      className="w-auto text-sm"
+      className={`w-auto text-sm ${posting? 'disabled' : ''}`}
       onClick = { ( async() => {
         const selected = selectSet
         // console.log(selected)
@@ -161,11 +169,13 @@ return (
       <Button 
       variant="primary"
       className="w-1/2 text-sm"
-      onClick = { ( async() => {
+
+      onClick ={ ( async() => {
         await handleSubmit(setData);
 
         setFlicker(prev => !prev);
       })}
+      
       >
         {`Add to ${selectSet.set_name}`}
         {/* {selectSet.set_name?`Add to ${selectSet.set_name}`:"Select a set"} */}

@@ -4,7 +4,7 @@ import { useOutletContext } from 'react-router-dom'
 import { api } from '../Utility/user_utilities'
 
 
-export default function DisplaySet({group, setSelectedGroup, setFlicker, setSet_Groups, grabCollection}) {
+export default function DisplaySet({group, setSelectedGroup, setFlicker, setSet_Groups, grabCollection, setCurrentError}) {
 const [manage, setManage] = useState(false)
 const [type,setType] = useState(false)
 // console.log(group)
@@ -19,20 +19,31 @@ useEffect(() => {
 },[])
 
 const handleDeleteSet = async() => {
+  if (manage) return
+  try {
+    setManage(true);
     await api.delete(`collection/set_groups/${group.set_group}/single_sets/${group.id}/`);
-    setFlicker(prev => !prev);
-    const updatedGroups = await api.get("collection/set_groups/");
-    setSet_Groups(updatedGroups.data.set_groups);
-    const updatedGroup = updatedGroups.data.set_groups.find(g => g.id === group.set_group);
-    setSelectedGroup(updatedGroup);
-    
+    await grabCollection();
+    const response = await api.get("collection/set_groups/")
+    const updatedGroups = response.data.set_groups;
+    setSet_Groups(updatedGroups)
+    const updatedGroup = updatedGroups.find(g => g.id === group.set_group);
+    setSelectedGroup(updatedGroup || [])
+    // setFlicker(prev => !prev)
+  } catch (error) {
+    setCurrentError("There was an error deleting the item")
+    console.error("error",error)
+  }
+  finally {
+    setManage(false)
+}
 }
 
   return (
 <div className="flex flex-wrap gap-6 justify-center p-6 bg-yellow-400 text-[#000000]">
 
 <div className="w-full text-center mb-4">
-  <h2 className="text-4xl font-extrabold lego-font text-[#DA291C] tracking-wider underline decoration-[#FFD700]">
+  <h2 className="text-4xl font-extrabold lego-font text-[#DA291C] tracking-wider underline decoration-[#000000]">
     
     {group.name}
   </h2>
@@ -61,9 +72,11 @@ const handleDeleteSet = async() => {
     {/* Button to remove set, now placed at the top-right corner */}
     <button
       variant="danger"
-      className="absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700h hover:scale-110 text-white font-bold py-2 px-2 rounded shadow-md transition duration-300"
-      onClick={() => {
-        handleDeleteSet();
+      className={`absolute right-1 top-0 bg-[#DA291C] hover:bg-red-700h hover:scale-110 text-white font-bold py-2 px-2 rounded shadow-md transition duration-300`}
+      onClick={ async() => {
+        await handleDeleteSet();
+        // await grabCollection();
+        setFlicker(prev => !prev);
         // grabCollection();
       }}
 
